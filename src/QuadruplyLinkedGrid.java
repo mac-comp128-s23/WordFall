@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.io.File;
+import java.util.Scanner;
 
 public class QuadruplyLinkedGrid {
     private final int width = 5;
@@ -42,6 +44,29 @@ public class QuadruplyLinkedGrid {
         //Will need a big method that checks if a word was formed in each side, making sure its checking for larger words first.
     public void wordChecker(QuadruplyLinkedNode<String> current){
         
+    }
+
+    /**
+     * Reads the wordlist file and returns an ArrayList of Strings representing the words.
+     * In this case we will use "src/wordlist.txt" as the fileName argument
+     * @param fileName
+     * @return
+     */
+    public ArrayList<String> readFile(String fileName) {
+        ArrayList<String> wordList = new ArrayList<String>();
+        try {
+            File myFile = new File(fileName);
+            Scanner fileScanner = new Scanner(myFile);
+            while(fileScanner.hasNextLine()) {
+                String data = fileScanner.nextLine().toLowerCase();
+                wordList.add(data);
+            }
+            fileScanner.close();
+        } catch(Exception e) {
+            System.out.println("File not found!");
+            e.printStackTrace();
+        }
+        return wordList;
     }
 
     public static void main(String[] args) {
