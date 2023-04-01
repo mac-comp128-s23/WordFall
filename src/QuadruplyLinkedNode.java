@@ -38,24 +38,44 @@ import org.w3c.dom.events.Event;
         return lower;
     }
 
-    public void setValue(E element) {
-        this.value = element;
+    // public void setValue(E element) {
+    //     this.value = element;
+    // }
+
+    public boolean setLeft(E element) {
+        if(this.left != null)
+            if(this.left.value == null){
+                this.left.value = element;
+                return true;
+            }
+        return false;
     }
 
-    public void setLeft(E element) {
-        this.left.setValue(element);
+    public boolean setRight(E element) {
+        if(this.right != null)
+            if(this.right.value == null){
+                this.right.value = element;
+                return true;
+            }
+        return false;
     }
 
-    public void setRight(E element) {
-        this.right.setValue(element);
+    public boolean setUpper(E element) {
+        if(this.upper != null)
+            if(this.upper.value == null){
+                this.upper.value = element;
+                return true;
+            }
+        return false;
     }
 
-    public void setUpper(E element) {
-        this.upper.setValue(element);
-    }
-
-    public void setLower(E element) {
-        this.lower.setValue(element);
+    public boolean setLower(E element) {
+        if(this.lower != null)
+            if(this.lower.value == null){
+                this.lower.value = element;
+                return true;
+            }
+        return false;
     }
 
     public void linkLeft(QuadruplyLinkedNode<E> node) {

@@ -6,6 +6,9 @@ public class QuadruplyLinkedGrid {
 
     private ArrayList<ArrayList<QuadruplyLinkedNode<String>>> grid;
 
+    /*Constructor for QuadruplyLinkedNode grid. First nested loop instantiates each ArrayList within each Arraylist.
+     * Second nested loop links all the nodes up.
+     */
     public QuadruplyLinkedGrid() {
         grid = new ArrayList<ArrayList<QuadruplyLinkedNode<String>>>();
         for(int y = 0; y < height; y++) {
@@ -31,8 +34,14 @@ public class QuadruplyLinkedGrid {
                 if(y != height - 1) {
                     node.linkUpper(grid.get(y+1).get(x));
                 }
+                //System.out.print(node);
             }
-        }
+            //System.out.println();
+        }        
+    }
+        //Will need a big method that checks if a word was formed in each side, making sure its checking for larger words first.
+    public void wordChecker(QuadruplyLinkedNode<String> current){
+        
     }
 
     public static void main(String[] args) {
