@@ -7,6 +7,7 @@ public class QuadruplyLinkedGrid {
     private final int height = 8;
 
     private ArrayList<ArrayList<QuadruplyLinkedNode<String>>> grid;
+    private ArrayList<String> dic;
 
     /*Constructor for QuadruplyLinkedNode grid. First nested loop instantiates each ArrayList within each Arraylist.
      * Second nested loop links all the nodes up.
@@ -39,11 +40,26 @@ public class QuadruplyLinkedGrid {
                 //System.out.print(node);
             }
             //System.out.println();
-        }        
+        }       
+        dic = readFile("src/wordlist.txt");
     }
         //Will need a big method that checks if a word was formed in each side, making sure its checking for larger words first.
     public void wordChecker(QuadruplyLinkedNode<String> current){
-        
+        QuadruplyLinkedNode<String>[] takenOut;
+        StringBuilder word = new StringBuilder("");
+        int row;
+        for(int i = 0; i < grid.size(); i++){
+            if (grid.get(i).contains(current)){
+                row 
+            }
+        }
+        for (int i = width; i>= 2; i--){
+            for(int j = 0; j+i <= width; j++){
+                for(int k = 0; k< i; k++){
+                    word.append(grid.get(grid.indexOf(current)).get(k).getValue());
+                }
+            }
+        }
     }
 
     /**

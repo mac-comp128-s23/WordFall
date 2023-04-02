@@ -37,10 +37,13 @@ import org.w3c.dom.events.Event;
     public QuadruplyLinkedNode<E> getLower() {
         return lower;
     }
+    public E getValue() {
+        return value;
+    }
 
-    // public void setValue(E element) {
-    //     this.value = element;
-    // }
+    public void setValue(E element) {
+        this.value = element;
+    }
 
     public boolean setLeft(E element) {
         if(this.left != null)
