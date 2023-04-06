@@ -1,20 +1,13 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.EventObject;
-import java.util.function.Consumer;
 
-import org.w3c.dom.events.Event;
-
-/**Class for the individual nodes
- * S
+/**
+ * Quadruply linked nodes have four links to other nodes. One for the upper, lower, left, and right nodes.
+ * These make up the grid which will be used for storing letters in our game.
  */
-
- public class QuadruplyLinkedNode<E> {
-    private QuadruplyLinkedNode<E> upper, lower, left, right;
+public class QNode<E> {
+    private QNode<E> upper, lower, left, right;
     private E value;
 
-    public QuadruplyLinkedNode() {
+    public QNode() {
         this.upper = null;
         this.lower = null;
         this.left = null;
@@ -22,27 +15,28 @@ import org.w3c.dom.events.Event;
         this.value = null;
     }
 
-    public QuadruplyLinkedNode<E> getLeft() {
-        return left;
-    }
-
-    public QuadruplyLinkedNode<E> getRight() {
-        return right;
-    }
-
-    public QuadruplyLinkedNode<E> getUpper() {
-        return upper;
-    }
-
-    public QuadruplyLinkedNode<E> getLower() {
-        return lower;
-    }
     public E getValue() {
         return value;
     }
 
     public void setValue(E element) {
         this.value = element;
+    }
+
+    public QNode<E> getLeft() {
+        return left;
+    }
+
+    public QNode<E> getRight() {
+        return right;
+    }
+
+    public QNode<E> getUpper() {
+        return upper;
+    }
+
+    public QNode<E> getLower() {
+        return lower;
     }
 
     public boolean setLeft(E element) {
@@ -81,19 +75,19 @@ import org.w3c.dom.events.Event;
         return false;
     }
 
-    public void linkLeft(QuadruplyLinkedNode<E> node) {
+    public void linkLeft(QNode<E> node) {
         this.left = node;
     }
 
-    public void linkRight(QuadruplyLinkedNode<E> node) {
+    public void linkRight(QNode<E> node) {
         this.right = node;
     }
 
-    public void linkUpper(QuadruplyLinkedNode<E> node) {
+    public void linkUpper(QNode<E> node) {
         this.upper = node;
     }
 
-    public void linkLower(QuadruplyLinkedNode<E> node) {
+    public void linkLower(QNode<E> node) {
         this.lower = node;
     }
  }
