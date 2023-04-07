@@ -72,7 +72,9 @@ public class QGrid {
             for(int startIndex = 0; startIndex + 1 <= width; startIndex++) {
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
-
+                // for(int i = 0; i < startIndex; i++){                     I added this so that the word being built actually starts at startIndex
+                //     temp = temp.getRight();
+                // }
                 for(int step = 0; step < wordLength; step++) {
                     word.append(temp.getValue());
                     temp = temp.getRight();
@@ -90,6 +92,9 @@ public class QGrid {
             for(int startIndex = 0; startIndex + 1 <= height; startIndex++) {
                 QNode<String> temp = lowerMostNode;
                 StringBuilder word = new StringBuilder("");
+                // for(int i = 0; i < startIndex; i++){                     I added this so that the word being built actually starts at startIndex
+                //     temp = temp.getRight();
+                // }
 
                 for(int step = 0; step < wordLength; step++) {
                     word.append(temp.getValue());
