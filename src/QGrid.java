@@ -47,6 +47,14 @@ public class QGrid {
             //System.out.println();
         }
     }
+
+    public QNode<String> getNode(int row, int col) {
+        return grid.get(row).get(col);
+    }
+
+    public ArrayList<ArrayList<QNode<String>>> getGrid() {
+        return grid;
+    }
     
     /**
      * Checks for any words on the grid that have been formed with the placement of the newest letter.
@@ -72,9 +80,9 @@ public class QGrid {
             for(int startIndex = 0; startIndex + 1 <= width; startIndex++) {
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
-                // for(int i = 0; i < startIndex; i++){                     I added this so that the word being built actually starts at startIndex
-                //     temp = temp.getRight();
-                // }
+                for(int i = 0; i < startIndex; i++){
+                    temp = temp.getRight();
+                }
                 for(int step = 0; step < wordLength; step++) {
                     word.append(temp.getValue());
                     temp = temp.getRight();
@@ -92,9 +100,9 @@ public class QGrid {
             for(int startIndex = 0; startIndex + 1 <= height; startIndex++) {
                 QNode<String> temp = lowerMostNode;
                 StringBuilder word = new StringBuilder("");
-                // for(int i = 0; i < startIndex; i++){                     I added this so that the word being built actually starts at startIndex
-                //     temp = temp.getRight();
-                // }
+                for(int i = 0; i < startIndex; i++){
+                    temp = temp.getRight();
+                }
 
                 for(int step = 0; step < wordLength; step++) {
                     word.append(temp.getValue());
@@ -134,7 +142,7 @@ public class QGrid {
      * @param fileName
      * @return
      */
-    public Map<Integer, ArrayList<String>> readFile(String fileName) {
+    private Map<Integer, ArrayList<String>> readFile(String fileName) {
         Map<Integer, ArrayList<String>> wordMap = new HashMap<Integer, ArrayList<String>>();
         try {
             File myFile = new File(fileName);

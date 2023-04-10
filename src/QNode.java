@@ -1,3 +1,5 @@
+import edu.macalester.graphics.*;
+import java.util.Iterator;
 
 /**
  * Quadruply linked nodes have four links to other nodes. One for the upper, lower, left, and right nodes.
@@ -6,6 +8,7 @@
 public class QNode<E> {
     private QNode<E> upper, lower, left, right;
     private E value;
+    private GraphicsGroup group;
 
     public QNode() {
         this.upper = null;
@@ -13,6 +16,15 @@ public class QNode<E> {
         this.left = null;
         this.right = null;
         this.value = null;
+        this.group = null;
+    }
+
+    public GraphicsGroup getGraphics() {
+        return group;
+    }
+
+    public void setGraphics(GraphicsGroup g) {
+        group = g;
     }
 
     public E getValue() {
@@ -20,6 +32,9 @@ public class QNode<E> {
     }
 
     public void setValue(E element) {
+        Iterator it = group.iterator();
+        ((GraphicsText)it.next()).setText((String)element);
+
         this.value = element;
     }
 
