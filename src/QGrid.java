@@ -145,29 +145,24 @@ public class QGrid {
     }
     /**
      * deletes the nodes in the list and then moves everything down to normal.
-     * @param list
+     * @param list the list to be deleted
      */
     private void deleteNodes(ArrayList<QNode<String>> list){
-        Boolean x = false;
+        
         for(int i = 0; i < list.size(); i ++){
             for(int row = 0; row < height; row ++){
                 for(int col = 0; col < width; col ++){
-                    QNode<String> marker = grid.get(row).get(col);
-                    if(marker == (list.get(i))){
-                        marker.setValue(null);
+                    if(grid.get(row).get(col) == (list.get(i))){
+                        grid.get(row).get(col).setValue(null);
                     }
                 }
             }
         }
 
-        for(int row = 0; row < height; row ++){
-            for(int col = 0; col < width; col ++){
-                QNode<String> marker = grid.get(row).get(col);
-                if(marker.setLower(marker.getValue())){
-                    if(marker.getUpper() == null){
-                        marker.setValue(null);
-                    }
-                    marker.setValue(marker.getUpper().getValue());
+        for(int row = height-1; row >= 0; row --){
+            for(int col = width-1; col >= 0; col --){
+                if(grid.get(row).get(col).setLower(grid.get(row).get(col).getValue())){
+                    grid.get(row).get(col).setValue(null);
                 }
             }
         }
