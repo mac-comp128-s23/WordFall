@@ -62,8 +62,8 @@ public class QGrid {
      * @param current the most recently placed letter
      * @return All of the words that were found
      */
-    public ArrayList<String> wordChecker(QNode<String> current){
-        ArrayList<String> wordsFound = new ArrayList<String>();
+    private ArrayList<QNode<String>> wordChecker(QNode<String> current){
+        ArrayList<QNode<String>> wordsFound = new ArrayList<QNode<String>>();
         
         // Finding the lowest node in the column and the leftmost node in the row
         QNode<String> lowerMostNode = current;
@@ -80,16 +80,22 @@ public class QGrid {
             for(int startIndex = 0; startIndex + 1 <= width; startIndex++) {
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
+                ArrayList<QNode<String>> wordNodes = new ArrayList<QNode<String>>();
                 for(int i = 0; i < startIndex; i++){
                     temp = temp.getRight();
                 }
                 for(int step = 0; step < wordLength; step++) {
                     word.append(temp.getValue());
                     temp = temp.getRight();
+                    wordNodes.add(temp);
                 }
 
                 if(dictionary.get(wordLength).contains(word.toString())) {
-                    wordsFound.add(word.toString());
+                    for(int i = 0; i < wordNodes.size(); i ++){
+                        if(!wordsFound.contains(wordNodes.get(0))){
+                            wordsFound.add(wordNodes.get(0));
+                        }
+                    }
                     break;
                 }
             }
@@ -100,21 +106,23 @@ public class QGrid {
             for(int startIndex = 0; startIndex + 1 <= height; startIndex++) {
                 QNode<String> temp = lowerMostNode;
                 StringBuilder word = new StringBuilder("");
+                ArrayList<QNode<String>> wordNodes = new ArrayList<QNode<String>>();
                 for(int i = 0; i < startIndex; i++){
-                    temp = temp.getRight();
+                    temp = temp.getUpper();
                 }
 
                 for(int step = 0; step < wordLength; step++) {
                     word.append(temp.getValue());
                     temp = temp.getUpper();
+                    wordNodes.add(temp);
                 }
 
-                if(dictionary.get(wordLength).contains(word.toString())) {
-                    wordsFound.add(word.toString());
-                    break;
-                }
-                if(dictionary.get(wordLength).contains(reverse(word.toString()))) {
-                    wordsFound.add(word.toString());
+                if(dictionary.get(wordLength).contains(word.toString()) || dictionary.get(wordLength).contains(reverse(word.toString()))) {
+                    for(int i = 0; i < wordNodes.size(); i ++){
+                        if(!wordsFound.contains(wordNodes.get(0))){
+                            wordsFound.add(wordNodes.get(0));
+                        }
+                    }
                     break;
                 }
             }
@@ -134,6 +142,47 @@ public class QGrid {
             output.append(s.charAt(i));
         }
         return output.toString();
+    }
+    /**
+     * deletes the nodes in the list and then moves everything down to normal.
+     * @param list
+     */
+    private void deleteNodes(ArrayList<QNode<String>> list){
+        Boolean x = false;
+        for(int i = 0; i < list.size(); i ++){
+            for(int row = 0; row < height; row ++){
+                for(int col = 0; col < width; col ++){
+                    QNode<String> marker = grid.get(row).get(col);
+                    if(marker == (list.get(i))){
+                        marker.setValue(null);
+                    }
+                }
+            }
+        }
+
+        for(int row = 0; row < height; row ++){
+            for(int col = 0; col < width; col ++){
+                QNode<String> marker = grid.get(row).get(col);
+                if(marker.setLower(marker.getValue())){
+                    if(marker.getUpper() == null){
+                        marker.setValue(null);
+                    }
+                    marker.setValue(marker.getUpper().getValue());
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Puts together all helper methods to do everything that happens once a words gets to the bottom of its column.
+     * @param current
+     */
+    public void afterWordSettles(QNode<String> current){
+        //while(method that returns if there are an more words within the grid) {
+        ArrayList<QNode<String>> wordsFound = wordChecker(current);
+        deleteNodes(wordsFound);
+        //}
     }
 
     /**
