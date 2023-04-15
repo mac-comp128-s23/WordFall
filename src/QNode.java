@@ -8,7 +8,8 @@ import java.util.Iterator;
 public class QNode<E> {
     private QNode<E> upper, lower, left, right;
     private E value;
-    private GraphicsGroup group;
+    private GraphicsText text;
+    private Rectangle rect;
 
     public QNode() {
         this.upper = null;
@@ -16,15 +17,22 @@ public class QNode<E> {
         this.left = null;
         this.right = null;
         this.value = null;
-        this.group = null;
+        this.text = null;
+        this.rect = null;
     }
 
     public GraphicsGroup getGraphics() {
+        GraphicsGroup group = new GraphicsGroup();
+        group.add(rect);
+        group.add(text);
         return group;
     }
 
     public void setGraphics(GraphicsGroup g) {
-        group = g;
+        Iterator<GraphicsObject> it = g.iterator();
+        // The rectangle is the first object in the GraphicsGroup passed from Game.drawGrid().
+        rect = (Rectangle) it.next();
+        text = (GraphicsText) it.next();
     }
 
     public E getValue() {
@@ -32,9 +40,7 @@ public class QNode<E> {
     }
 
     public void setValue(E element) {
-        Iterator it = group.iterator();
-        ((GraphicsText)it.next()).setText((String)element);
-
+        text.setText((String)element);
         this.value = element;
     }
 

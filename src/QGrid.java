@@ -144,7 +144,7 @@ public class QGrid {
         return output.toString();
     }
     /**
-     * deletes the nodes in the list and then moves everything down to normal.
+     * Deletes the nodes in the list and then moves everything down to normal.
      * @param list the list to be deleted
      */
     private void deleteNodes(ArrayList<QNode<String>> list){

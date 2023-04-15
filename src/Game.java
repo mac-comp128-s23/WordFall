@@ -1,5 +1,4 @@
 import edu.macalester.graphics.*;
-import java.awt.Color;
 
 public class Game {
     private final int CANVAS_WIDTH = 800;
@@ -15,6 +14,22 @@ public class Game {
         canvas = new CanvasWindow("Word Capture", CANVAS_WIDTH, CANVAS_HEIGHT);
         grid = new QGrid();
         drawGrid();
+
+        canvas.onKeyDown(e -> {
+            moveFallingLetter(e.getKey().toString());
+        });
+    }
+
+    private void moveFallingLetter(String key) {
+        //TODO: Make a letter "fall" from the top of the screen by moving it down every second(?).
+        //Maybe make a new class for this, as we'll need to handle a few different things for it.
+
+        //TODO: Add code to make the falling letter move left or right based on which arrow keys the user presses.
+        if(key.equals("LEFT_ARROW")) {
+            //Move the falling letter left
+        } else { //RIGHT_ARROW:
+            //Move the falling letter right
+        }
     }
 
     private void drawGrid() {
