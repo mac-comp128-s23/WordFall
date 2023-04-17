@@ -11,8 +11,8 @@ public class Game {
     private final int GAME_WIDTH = 375;
     private final int GAME_HEIGHT = 600;
 
-    private int row;
-    private int col;
+    private int fallingLetterRow;
+    private int fallingLetterCol;
 
     private CanvasWindow canvas;
     private QGrid grid;
@@ -20,6 +20,10 @@ public class Game {
     private boolean gameIsRunning;
     private boolean letterHasLanded;
 
+    /**
+     * This class is used for Timer.schedule().
+     * The action in the run() method is continually repeated after intervals of a specified time.
+     */
     class MoveDownTask extends TimerTask {
         public void run() {
             if(gameIsRunning) {
@@ -29,27 +33,31 @@ public class Game {
                     String letter = alphabet.substring(random, random + 1);
                     grid.setNode(0, 2, letter);
 
-                    row = 0;
-                    col = 2;
+                    fallingLetterRow = 0;
+                    fallingLetterCol = 2;
 
                     letterHasLanded = false;
 
                     System.out.println("letterHasLanded == true");
                 } else {
-                    QNode<String> fallingNode = grid.getNode(row, col);
+                    QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
                     if(!fallingNode.setLower(fallingNode.getValue())) {
                         letterHasLanded = true;
                     } else {
-                        row++;
+                        fallingLetterRow++;
                     }
                     System.out.println("letterHasLanded == false");
                 }
 
-                drawGrid();
+                // drawGrid();
             }
         }
     }
 
+    /**
+     * The game constructor. 
+     * Creating a new Game object causes the window to appear and the game to begin running.
+     */
     public Game() {
         letterHasLanded = true;
         gameIsRunning = true;
@@ -59,27 +67,31 @@ public class Game {
         drawGrid();
 
         timer = new Timer();
-        timer.schedule(new MoveDownTask(), 5000, 1000);
+        timer.schedule(new MoveDownTask(), 2000, 1000);
 
         canvas.onKeyDown(e -> {
             moveFallingLetter(e.getKey().toString());
         });
     }
 
+    /**
+     * Moves the currently falling letter to the left or right depending on which arrow key is pressed.
+     * @param key The name of the key ("LEFT_ARROW" or "RIGHT_ARROW")
+     */
     private void moveFallingLetter(String key) {
-        //TODO: Make a letter "fall" from the top of the screen by moving it down every second(?).
-        //Maybe make a new class for this, as we'll need to handle a few different things for it.
-
         //TODO: Add code to make the falling letter move left or right based on which arrow keys the user presses.
         if(key.equals("LEFT_ARROW")) {
-            //Move the falling letter left
-            row--;
+            fallingLetterCol--;
         } else { //RIGHT_ARROW:
             //Move the falling letter right
-            row++;
+            fallingLetterCol++;
         }
     }
 
+    /**
+     * Draws the initial grid
+     * Subsequent calls will update the graphics, including any letters that are present.
+     */
     private void drawGrid() {
         canvas.removeAll();
 

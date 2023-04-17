@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Map;
 
@@ -12,8 +13,8 @@ public class QGrid {
     private Map<Integer, ArrayList<String>> dictionary;
 
     /*
-     * Constructor for QuadruplyLinkedNode grid. First nested loop instantiates each ArrayList within each Arraylist.
-     * Second nested loop links all the nodes up.
+     * Constructor for QNode grid. First nested loop instantiates each ArrayList within each Arraylist.
+     * Second nested loop links all the nodes to their neighbors.
      */
     public QGrid() {
         dictionary = readFile("src/wordlist.txt");
@@ -147,15 +148,16 @@ public class QGrid {
         }
         return output.toString();
     }
+
     /**
      * Deletes the nodes in the list and then moves everything down to normal.
      * @param list the list to be deleted
      */
     private void deleteNodes(ArrayList<QNode<String>> list){
         
-        for(int i = 0; i < list.size(); i ++){
-            for(int row = 0; row < height; row ++){
-                for(int col = 0; col < width; col ++){
+        for(int i = 0; i < list.size(); i++){
+            for(int row = 0; row < height; row++){
+                for(int col = 0; col < width; col++){
                     if(grid.get(row).get(col) == (list.get(i))){
                         grid.get(row).get(col).setValue(null);
                     }
@@ -163,8 +165,8 @@ public class QGrid {
             }
         }
 
-        for(int row = height-1; row >= 0; row --){
-            for(int col = width-1; col >= 0; col --){
+        for(int row = height-1; row >= 0; row--){
+            for(int col = width-1; col >= 0; col--){
                 if(grid.get(row).get(col).setLower(grid.get(row).get(col).getValue())){
                     grid.get(row).get(col).setValue(null);
                 }
@@ -177,7 +179,7 @@ public class QGrid {
      * Puts together all helper methods to do everything that happens once a words gets to the bottom of its column.
      * @param current
      */
-    public void afterWordSettles(QNode<String> current){
+    public void afterWordSettles(QNode<String> current) {
         //while(method that returns if there are an more words within the grid) {
         ArrayList<QNode<String>> wordsFound = wordChecker(current);
         deleteNodes(wordsFound);
@@ -209,9 +211,8 @@ public class QGrid {
                 // Adding words to the map based on their length
                 wordMap.put(wordLength, updatedList);
             }
-
             fileScanner.close();
-        } catch(Exception e) {
+        } catch(FileNotFoundException e) {
             System.out.println("File not found!");
             e.printStackTrace();
         }

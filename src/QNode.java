@@ -21,6 +21,10 @@ public class QNode<E> {
         this.rect = new Rectangle(0, 0, 0, 0);
     }
 
+    /**
+     * Returns the GraphicsGroup of a Rectangle and GraphicsText that visually represent the group
+     * @return
+     */
     public GraphicsGroup getGraphics() {
         GraphicsGroup group = new GraphicsGroup();
         group.add(rect);
@@ -28,6 +32,10 @@ public class QNode<E> {
         return group;
     }
 
+    /**
+     * Updates the graphical representation of this node
+     * @param g
+     */
     public void setGraphics(GraphicsGroup g) {
         Iterator<GraphicsObject> it = g.iterator();
         // The rectangle is the first object in the GraphicsGroup passed from Game.drawGrid().
@@ -104,7 +112,6 @@ public class QNode<E> {
                 this.setValue(null);
                 return true;
             }
-            // System.out.println("this.lower is NOT NULL or its value is NOT NULL");
         return false;
     }
 
