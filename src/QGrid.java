@@ -219,8 +219,4 @@ public class QGrid {
 
         return wordMap;
     }
-
-    public static void main(String[] args) {
-        new QGrid();
-    }
 }

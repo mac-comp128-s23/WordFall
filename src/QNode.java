@@ -82,6 +82,7 @@ public class QNode<E> {
         if(this.left != null)
             if(this.left.value == null){
                 this.left.value = element;
+                this.setValue(null);
                 return true;
             }
         return false;
@@ -91,6 +92,7 @@ public class QNode<E> {
         if(this.right != null)
             if(this.right.value == null){
                 this.right.value = element;
+                this.setValue(null);
                 return true;
             }
         return false;
@@ -100,6 +102,7 @@ public class QNode<E> {
         if(this.upper != null)
             if(this.upper.value == null){
                 this.upper.value = element;
+                this.setValue(null);
                 return true;
             }
         return false;

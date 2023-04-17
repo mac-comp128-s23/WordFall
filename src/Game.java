@@ -1,6 +1,4 @@
 import edu.macalester.graphics.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Game {
     private final String alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -11,46 +9,39 @@ public class Game {
     private final int GAME_WIDTH = 375;
     private final int GAME_HEIGHT = 600;
 
+    private int letterStepTime = 1000; //milliseconds
+
     private int fallingLetterRow;
     private int fallingLetterCol;
 
     private CanvasWindow canvas;
     private QGrid grid;
-    private Timer timer;
     private boolean gameIsRunning;
     private boolean letterHasLanded;
 
-    /**
-     * This class is used for Timer.schedule().
-     * The action in the run() method is continually repeated after intervals of a specified time.
-     */
-    class MoveDownTask extends TimerTask {
-        public void run() {
-            if(gameIsRunning) {
-                //TODO: Check for game end
-                if(letterHasLanded) {
-                    int random = (int)(Math.random() * 26);
-                    String letter = alphabet.substring(random, random + 1);
-                    grid.setNode(0, 2, letter);
+    public void moveDown() {
+        if(gameIsRunning) {
+            //TODO: Check for game end
+            if(letterHasLanded) {
+                int random = (int)(Math.random() * 26);
+                String letter = alphabet.substring(random, random + 1);
+                grid.setNode(0, 2, letter);
 
-                    fallingLetterRow = 0;
-                    fallingLetterCol = 2;
+                fallingLetterRow = 0;
+                fallingLetterCol = 2;
 
-                    letterHasLanded = false;
-
-                    System.out.println("letterHasLanded == true");
+                letterHasLanded = false;
+            } else {
+                QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
+                if(!fallingNode.setLower(fallingNode.getValue())) {
+                    letterHasLanded = true;
                 } else {
-                    QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
-                    if(!fallingNode.setLower(fallingNode.getValue())) {
-                        letterHasLanded = true;
-                    } else {
-                        fallingLetterRow++;
-                    }
-                    System.out.println("letterHasLanded == false");
+                    fallingLetterRow++;
                 }
-
-                // drawGrid();
             }
+
+            canvas.pause(letterStepTime);
+            drawGrid();
         }
     }
 
@@ -66,8 +57,7 @@ public class Game {
         grid = new QGrid();
         drawGrid();
 
-        timer = new Timer();
-        timer.schedule(new MoveDownTask(), 2000, 1000);
+        canvas.animate(() -> moveDown());
 
         canvas.onKeyDown(e -> {
             moveFallingLetter(e.getKey().toString());
@@ -80,11 +70,15 @@ public class Game {
      */
     private void moveFallingLetter(String key) {
         //TODO: Add code to make the falling letter move left or right based on which arrow keys the user presses.
+        QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
         if(key.equals("LEFT_ARROW")) {
-            fallingLetterCol--;
+            if(fallingNode.setLeft(fallingNode.getValue())) {
+                fallingLetterCol--;
+            }
         } else { //RIGHT_ARROW:
-            //Move the falling letter right
-            fallingLetterCol++;
+            if(fallingNode.setRight(fallingNode.getValue())) {
+                fallingLetterCol++;
+            }
         }
     }
 
