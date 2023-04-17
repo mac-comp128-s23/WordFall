@@ -17,8 +17,8 @@ public class QNode<E> {
         this.left = null;
         this.right = null;
         this.value = null;
-        this.text = null;
-        this.rect = null;
+        this.text = new GraphicsText();
+        this.rect = new Rectangle(0, 0, 0, 0);
     }
 
     public GraphicsGroup getGraphics() {
@@ -31,8 +31,14 @@ public class QNode<E> {
     public void setGraphics(GraphicsGroup g) {
         Iterator<GraphicsObject> it = g.iterator();
         // The rectangle is the first object in the GraphicsGroup passed from Game.drawGrid().
-        rect = (Rectangle) it.next();
-        text = (GraphicsText) it.next();
+        if(it.hasNext()) {
+            rect = (Rectangle) it.next();
+            System.out.println("Rectangle has been changed");
+        }
+        if(it.hasNext()) {
+            text = (GraphicsText) it.next();
+            System.out.println("GraphicsText has been changed.");
+        }
     }
 
     public E getValue() {
@@ -40,7 +46,11 @@ public class QNode<E> {
     }
 
     public void setValue(E element) {
-        text.setText((String)element);
+        if(element == null) {
+            this.text.setText("");
+        } else {
+            this.text.setText((String)element);
+        }
         this.value = element;
     }
 
@@ -89,10 +99,12 @@ public class QNode<E> {
 
     public boolean setLower(E element) {
         if(this.lower != null)
-            if(this.lower.value == null){
-                this.lower.value = element;
+            if(this.lower.getValue() == null){
+                this.lower.setValue(element);
+                this.setValue(null);
                 return true;
             }
+            // System.out.println("this.lower is NOT NULL or its value is NOT NULL");
         return false;
     }
 

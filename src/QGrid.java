@@ -33,14 +33,14 @@ public class QGrid {
                 if(x != 0) {
                     node.linkLeft(grid.get(y).get(x-1));
                 }
-                if(y != 0) {
-                    node.linkLower(grid.get(y-1).get(x));
+                if(y != height - 1) {
+                    node.linkLower(grid.get(y+1).get(x));
                 }
                 if(x != width - 1) {
                     node.linkRight(grid.get(y).get(x+1));
                 }
-                if(y != height - 1) {
-                    node.linkUpper(grid.get(y+1).get(x));
+                if(y != 0) {
+                    node.linkUpper(grid.get(y-1).get(x));
                 }
                 //System.out.print(node);
             }
@@ -50,6 +50,10 @@ public class QGrid {
 
     public QNode<String> getNode(int row, int col) {
         return grid.get(row).get(col);
+    }
+
+    public void setNode(int row, int col, String value) {
+        grid.get(row).get(col).setValue(value);
     }
 
     public ArrayList<ArrayList<QNode<String>>> getGrid() {
@@ -196,8 +200,11 @@ public class QGrid {
             while(fileScanner.hasNextLine()) {
                 String word = fileScanner.nextLine().toLowerCase();
                 int wordLength = word.length();
+
                 ArrayList<String> updatedList = wordMap.get(wordLength);
-                updatedList.add(word);
+                if(updatedList != null) {
+                    updatedList.add(word);
+                }
 
                 // Adding words to the map based on their length
                 wordMap.put(wordLength, updatedList);
