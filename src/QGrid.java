@@ -180,10 +180,13 @@ public class QGrid {
      * @param current
      */
     public void afterWordSettles(QNode<String> current) {
-        //while(method that returns if there are an more words within the grid) {
         ArrayList<QNode<String>> wordsFound = wordChecker(current);
         deleteNodes(wordsFound);
-        //}
+        
+        for(int i = 0; i < width; i ++){
+            wordsFound = wordChecker(getNode(0,i));
+            deleteNodes(wordsFound);
+        }
     }
 
     /**
