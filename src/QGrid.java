@@ -9,6 +9,8 @@ public class QGrid {
     private final int width = 5;
     private final int height = 8;
 
+    private final static int MIN_WORD_LENGTH = 2;
+
     private ArrayList<ArrayList<QNode<String>>> grid;
     private Map<Integer, ArrayList<String>> dictionary;
     private boolean gameOver;
@@ -85,7 +87,7 @@ public class QGrid {
         }
 
         // Finding words horizontally
-        for(int wordLength = width; wordLength >= 2; wordLength--) {
+        for(int wordLength = width; wordLength >= MIN_WORD_LENGTH; wordLength--) {
             for(int startIndex = 0; startIndex + 1 <= width; startIndex++) {
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
@@ -115,7 +117,7 @@ public class QGrid {
         }
 
         // Finding words vertically
-        for(int wordLength = height; wordLength >= 2; wordLength--) {
+        for(int wordLength = height; wordLength >= MIN_WORD_LENGTH; wordLength--) {
             for(int startIndex = 0; startIndex + 1 <= height; startIndex++) {
                 QNode<String> temp = lowerMostNode;
                 StringBuilder word = new StringBuilder("");

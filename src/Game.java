@@ -22,6 +22,8 @@ public class Game {
     private boolean gameIsRunning;
     private boolean letterHasLanded;
 
+    private int totalLettersLanded;
+
     /**
      * The game constructor. 
      * Creating a new Game object causes the window to appear and the game to begin running.
@@ -32,6 +34,7 @@ public class Game {
         stepInterval = 1000;
         lastStepTime = System.currentTimeMillis();
         currentTime = System.currentTimeMillis();
+        totalLettersLanded = 0;
 
         canvas = new CanvasWindow("Word Capture", CANVAS_WIDTH, CANVAS_HEIGHT);
         grid = new QGrid();
@@ -79,13 +82,17 @@ public class Game {
                 QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
                 if(!fallingNode.setLower(fallingNode.getValue())) {
                     letterHasLanded = true;
+                    totalLettersLanded++;
+
                     grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol), letterHasLanded);
                 } else {
                     fallingLetterRow++;
                 }
             }
 
-            stepInterval = 1000;
+            // Recalculate the step interval before continuing
+            recalculateStepInterval();
+            System.out.println(totalLettersLanded + " letters, interval = " + stepInterval);
 
             // Updates the grid to show the new letter positions
             drawGrid();
@@ -172,6 +179,22 @@ public class Game {
             }
         }
         return "";
+    }
+
+    /**
+     * Based on the total number of letters that have landed, recalculate the step interval, which speeds up over time.
+     * If x is the number of letters that have landed and i is the interval in milliseconds,
+     *      i = 450cos(x/200)+550   {0 ≤ x ≤ 254}
+     *      i = 1000(0.9985)^x      {255 ≤ x}
+     * @return
+     */
+    private void recalculateStepInterval() {
+        // The two functions first intersect at x = 254.306, so after that point, switch to exp. decay.
+        if(totalLettersLanded <= 254) {
+            this.stepInterval = (int) (450 * Math.cos(totalLettersLanded / 200.0) + 550);
+        } else {
+            this.stepInterval =  (int) (1000 * Math.pow(0.9985, totalLettersLanded));
+        }
     }
 
     public static void main(String[] args) {
