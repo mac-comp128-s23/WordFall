@@ -193,7 +193,7 @@ public class QGrid {
      * Then checks the entire grid for any new words that may have been 
      * @param current is the node that just landed
      */
-    public void afterWordSettles(QNode<String> current) {
+    public void afterWordSettles(QNode<String> current, boolean letterHasLanded) {
         ArrayList<QNode<String>> wordsFound = wordChecker(current);        
 
         int num = wordsFound.size();
@@ -207,17 +207,17 @@ public class QGrid {
             }
         }
 
-        gameOver = gameOver();
+        gameOver = gameOver(letterHasLanded);
     }
 
     /**
      * returns whether the game is over, determined by whether or not there is a block on the penultimate row.
      * @return
      */
-    public boolean gameOver(){
+    public boolean gameOver(boolean letterHasLanded){
 
         for(int i = 0; i < width; i ++){
-            if(getNode(1, i).getValue() != null){
+            if(getNode(0, i).getValue() != null && letterHasLanded){
                 return true;
             }
         }

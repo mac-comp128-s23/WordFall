@@ -1,14 +1,14 @@
 import edu.macalester.graphics.*;
 
 public class Game {
-    private final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final String easyWords = "BAT";
+    private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // private final static String easyWords = "BAT";
 
-    private final int CANVAS_WIDTH = 800;
-    private final int CANVAS_HEIGHT = 800;
+    private final static int CANVAS_WIDTH = 800;
+    private final static int CANVAS_HEIGHT = 800;
 
-    private final int GAME_WIDTH = 375;
-    private final int GAME_HEIGHT = 600;
+    private final static int GAME_WIDTH = 375;
+    private final static int GAME_HEIGHT = 600;
 
     private long stepInterval; // in milliseconds
     private long lastStepTime;
@@ -40,11 +40,8 @@ public class Game {
         // The lambda functions that run the game:
         canvas.onKeyDown(e -> {
             moveSideways(e.getKey().toString());
-            canvas.draw();
+            drawGrid();
         });
-
-        // canvas.pause(2000);
-        // moveDown();
 
         canvas.animate(() -> moveDown());
     }
@@ -70,9 +67,7 @@ public class Game {
 
             // Checks if the letter has landed. If so, start a new letter falling from the top center space.
             if(letterHasLanded) {
-                String lettersFalling = alphabet;
-                int random = (int)(Math.random() * lettersFalling.length());
-                String letter = lettersFalling.substring(random, random + 1);
+                String letter = getRandomLetter();
                 grid.setNode(0, 2, letter);
 
                 fallingLetterRow = 0;
@@ -84,7 +79,7 @@ public class Game {
                 QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
                 if(!fallingNode.setLower(fallingNode.getValue())) {
                     letterHasLanded = true;
-                    grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol));
+                    grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol), letterHasLanded);
                 } else {
                     fallingLetterRow++;
                 }
@@ -161,7 +156,30 @@ public class Game {
         canvas.add(background);
     }
 
+    /**
+     * Using the letter distribution in Banangrams as a reference, gives a random letter.
+     * @return
+     */
+    private static String getRandomLetter() {
+        int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2};
+        int random = (int) (Math.random() * 144); // Integer from 0 to 143
+        int total = 0;
+
+        for(int outputIndex = 0; outputIndex < 26; outputIndex++) {
+            total += distribution[outputIndex];
+            if(total >= random) {
+                return alphabet.substring(outputIndex, outputIndex + 1);
+            }
+        }
+        return "";
+    }
+
     public static void main(String[] args) {
         new Game();
+
+        // Testing letter distrubution
+        // for(int i = 0; i < 100; i++) {
+        //     System.out.println(getRandomLetter());
+        // }
     }
 }
