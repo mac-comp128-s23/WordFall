@@ -127,12 +127,12 @@ public class QGrid {
                 for(int step = 0; step < wordLength; step++) {
                     if(temp != null){
                         word.append(temp.getValue());
-                        temp = temp.getUpper();
                         wordNodes.add(temp);
+                        temp = temp.getUpper();
                     }
                 }
 
-                if(dictionary.get(wordLength).contains(word.toString()) || dictionary.get(wordLength).contains(reverse(word.toString()))) {
+                if(dictionary.get(wordLength).contains(word.toString().toLowerCase()) || dictionary.get(wordLength).contains(reverse(word.toString().toLowerCase()))) {
                     for(int i = 0; i < wordNodes.size(); i ++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
