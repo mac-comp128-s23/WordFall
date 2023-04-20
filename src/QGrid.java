@@ -67,7 +67,7 @@ public class QGrid {
     
     /**
      * Checks for any words on the grid that have been formed with the placement of the newest letter.
-     * Words can be formed vertically (top->bottom or bottom->top) and horizontally (left->right).
+     * Words can be formed vertically (top->bottom) and horizontally (left->right).
      * @param current the most recently placed letter
      * @return All of the words that were found
      */
@@ -132,7 +132,7 @@ public class QGrid {
                     }
                 }
 
-                if(dictionary.get(wordLength).contains(word.toString().toLowerCase()) || dictionary.get(wordLength).contains(reverse(word.toString().toLowerCase()))) {
+                if(dictionary.get(wordLength).contains(reverse(word.toString().toLowerCase()))) {
                     for(int i = 0; i < wordNodes.size(); i ++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
