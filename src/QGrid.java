@@ -11,6 +11,7 @@ public class QGrid {
 
     private ArrayList<ArrayList<QNode<String>>> grid;
     private Map<Integer, ArrayList<String>> dictionary;
+    private boolean gameOver;
 
     /*
      * Constructor for QNode grid. First nested loop instantiates each ArrayList within each Arraylist.
@@ -32,16 +33,16 @@ public class QGrid {
             for(int x = 0; x < width; x++) {
                 QNode<String> node = grid.get(y).get(x);
                 if(x != 0) {
-                    node.linkLeft(grid.get(y).get(x-1));
+                    node.linkLeft(getNode(y, x-1));
                 }
                 if(y != height - 1) {
-                    node.linkLower(grid.get(y+1).get(x));
+                    node.linkLower(getNode(y+1,x));
                 }
                 if(x != width - 1) {
-                    node.linkRight(grid.get(y).get(x+1));
+                    node.linkRight(getNode(y,x+1));
                 }
                 if(y != 0) {
-                    node.linkUpper(grid.get(y-1).get(x));
+                    node.linkUpper(getNode(y-1,x));
                 }
                 //System.out.print(node);
             }
@@ -59,6 +60,9 @@ public class QGrid {
 
     public ArrayList<ArrayList<QNode<String>>> getGrid() {
         return grid;
+    }
+    public boolean gameIsOver(){
+        return gameOver;
     }
     
     /**
@@ -90,15 +94,19 @@ public class QGrid {
                     temp = temp.getRight();
                 }
                 for(int step = 0; step < wordLength; step++) {
-                    word.append(temp.getValue());
-                    temp = temp.getRight();
-                    wordNodes.add(temp);
+                    if(temp != null){
+                        word.append(temp.getValue());
+                        wordNodes.add(temp);
+                        temp = temp.getRight();
+                        
+                    }
                 }
+                //System.out.println(word.toString());
 
-                if(dictionary.get(wordLength).contains(word.toString())) {
+                if(dictionary.get(wordLength).contains(word.toString().toLowerCase())) {
                     for(int i = 0; i < wordNodes.size(); i ++){
-                        if(!wordsFound.contains(wordNodes.get(0))){
-                            wordsFound.add(wordNodes.get(0));
+                        if(!wordsFound.contains(wordNodes.get(i))){
+                            wordsFound.add(wordNodes.get(i));
                         }
                     }
                     break;
@@ -117,15 +125,17 @@ public class QGrid {
                 }
 
                 for(int step = 0; step < wordLength; step++) {
-                    word.append(temp.getValue());
-                    temp = temp.getUpper();
-                    wordNodes.add(temp);
+                    if(temp != null){
+                        word.append(temp.getValue());
+                        temp = temp.getUpper();
+                        wordNodes.add(temp);
+                    }
                 }
 
                 if(dictionary.get(wordLength).contains(word.toString()) || dictionary.get(wordLength).contains(reverse(word.toString()))) {
                     for(int i = 0; i < wordNodes.size(); i ++){
-                        if(!wordsFound.contains(wordNodes.get(0))){
-                            wordsFound.add(wordNodes.get(0));
+                        if(!wordsFound.contains(wordNodes.get(i))){
+                            wordsFound.add(wordNodes.get(i));
                         }
                     }
                     break;
@@ -143,7 +153,7 @@ public class QGrid {
      */
     private String reverse(String s) {
         StringBuilder output = new StringBuilder("");
-        for(int i = s.length(); i >= 0; i--) {
+        for(int i = s.length()-1; i >= 0; i--) {
             output.append(s.charAt(i));
         }
         return output.toString();
@@ -154,12 +164,15 @@ public class QGrid {
      * @param list the list to be deleted
      */
     private void deleteNodes(ArrayList<QNode<String>> list){
-        
+        //System.out.println(list.toString());
+        if(list.size() == 0){
+            return;
+        }
         for(int i = 0; i < list.size(); i++){
             for(int row = 0; row < height; row++){
                 for(int col = 0; col < width; col++){
-                    if(grid.get(row).get(col) == (list.get(i))){
-                        grid.get(row).get(col).setValue(null);
+                    if(getNode(row,col) == (list.get(i))){
+                        getNode(row,col).setValue(null);
                     }
                 }
             }
@@ -167,8 +180,8 @@ public class QGrid {
 
         for(int row = height-1; row >= 0; row--){
             for(int col = width-1; col >= 0; col--){
-                if(grid.get(row).get(col).setLower(grid.get(row).get(col).getValue())){
-                    grid.get(row).get(col).setValue(null);
+                if(getNode(row,col).setLower(getNode(row,col).getValue())){
+                    getNode(row,col).setValue(null);
                 }
             }
         }
@@ -177,16 +190,39 @@ public class QGrid {
 
     /**
      * Puts together all helper methods to do everything that happens once a words gets to the bottom of its column.
-     * @param current
+     * Then checks the entire grid for any new words that may have been 
+     * @param current is the node that just landed
      */
     public void afterWordSettles(QNode<String> current) {
-        ArrayList<QNode<String>> wordsFound = wordChecker(current);
-        deleteNodes(wordsFound);
+        ArrayList<QNode<String>> wordsFound = wordChecker(current);        
+
+        int num = wordsFound.size();
         
-        for(int i = 0; i < width; i ++){
-            wordsFound = wordChecker(getNode(0,i));
+        if(num > 0){
+            
             deleteNodes(wordsFound);
+            for(int i = 0; i < width; i ++){
+                wordsFound = wordChecker(getNode(0,i));
+                deleteNodes(wordsFound);
+            }
         }
+
+        gameOver = gameOver();
+    }
+
+    /**
+     * returns whether the game is over, determined by whether or not there is a block on the penultimate row.
+     * @return
+     */
+    public boolean gameOver(){
+
+        for(int i = 0; i < width; i ++){
+            if(getNode(1, i).getValue() != null){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -207,9 +243,10 @@ public class QGrid {
                 int wordLength = word.length();
 
                 ArrayList<String> updatedList = wordMap.get(wordLength);
-                if(updatedList != null) {
-                    updatedList.add(word);
+                if(updatedList == null){
+                    updatedList = new ArrayList<String>();
                 }
+                updatedList.add(word);
 
                 // Adding words to the map based on their length
                 wordMap.put(wordLength, updatedList);

@@ -2,6 +2,7 @@ import edu.macalester.graphics.*;
 
 public class Game {
     private final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private final String easyWords = "BAT";
 
     private final int CANVAS_WIDTH = 800;
     private final int CANVAS_HEIGHT = 800;
@@ -62,32 +63,38 @@ public class Game {
 
         lastStepTime = currentTime;
 
-        //TODO: Check for game end
-
-        // Checks if the letter has landed. If so, start a new letter falling from the top center space.
-        if(letterHasLanded) {
-            int random = (int)(Math.random() * 26);
-            String letter = alphabet.substring(random, random + 1);
-            grid.setNode(0, 2, letter);
-
-            fallingLetterRow = 0;
-            fallingLetterCol = 2;
-
-            letterHasLanded = false;
-        // If it hasn't landed, try to make it fall by one step. If this can't happen, update letterHasLanded.
-        } else {
-            QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
-            if(!fallingNode.setLower(fallingNode.getValue())) {
-                letterHasLanded = true;
-            } else {
-                fallingLetterRow++;
-            }
+        if(grid.gameIsOver()){
+            return;
         }
+        else{
 
-        stepInterval = 1000;
+            // Checks if the letter has landed. If so, start a new letter falling from the top center space.
+            if(letterHasLanded) {
+                String lettersFalling = alphabet;
+                int random = (int)(Math.random() * lettersFalling.length());
+                String letter = lettersFalling.substring(random, random + 1);
+                grid.setNode(0, 2, letter);
 
-        // Updates the grid to show the new letter positions
-        drawGrid();
+                fallingLetterRow = 0;
+                fallingLetterCol = 2;
+
+                letterHasLanded = false;
+            // If it hasn't landed, try to make it fall by one step. If this can't happen, update letterHasLanded.
+            } else {
+                QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
+                if(!fallingNode.setLower(fallingNode.getValue())) {
+                    letterHasLanded = true;
+                    grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol));
+                } else {
+                    fallingLetterRow++;
+                }
+            }
+
+            stepInterval = 1000;
+
+            // Updates the grid to show the new letter positions
+            drawGrid();
+        }
     }
 
     /**
