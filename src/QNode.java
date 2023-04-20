@@ -80,8 +80,8 @@ public class QNode<E> {
 
     public boolean setLeft(E element) {
         if(this.left != null)
-            if(this.left.value == null){
-                this.left.value = element;
+            if(this.left.getValue() == null){
+                this.left.setValue(element);
                 this.setValue(null);
                 return true;
             }
@@ -90,8 +90,8 @@ public class QNode<E> {
 
     public boolean setRight(E element) {
         if(this.right != null)
-            if(this.right.value == null){
-                this.right.value = element;
+            if(this.right.getValue() == null){
+                this.right.setValue(element);
                 this.setValue(null);
                 return true;
             }
@@ -100,8 +100,8 @@ public class QNode<E> {
 
     public boolean setUpper(E element) {
         if(this.upper != null)
-            if(this.upper.value == null){
-                this.upper.value = element;
+            if(this.upper.getValue() == null){
+                this.upper.setValue(element);
                 this.setValue(null);
                 return true;
             }
