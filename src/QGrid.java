@@ -8,6 +8,7 @@ import java.util.Map;
 public class QGrid {
     private final int width = 5;
     private final int height = 8;
+    private final int redLine = 6;
 
     private final static int MIN_WORD_LENGTH = 2;
 
@@ -65,6 +66,9 @@ public class QGrid {
     }
     public boolean gameIsOver(){
         return gameOver;
+    }
+    public int redLine(){
+        return redLine;
     }
     
     /**
@@ -219,7 +223,7 @@ public class QGrid {
     public boolean gameOver(boolean letterHasLanded){
 
         for(int i = 0; i < width; i ++){
-            if(getNode(0, i).getValue() != null && letterHasLanded){
+            if(getNode(redLine, i).getValue() != null && letterHasLanded){
                 return true;
             }
         }

@@ -1,4 +1,5 @@
 import edu.macalester.graphics.*;
+import java.awt.Color;
 
 public class Game {
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -64,7 +65,9 @@ public class Game {
         lastStepTime = currentTime;
 
         if(grid.gameIsOver()){
-            return;
+            
+            GameOverScreen();
+            gameIsRunning = false;
         }
         else{
 
@@ -97,6 +100,14 @@ public class Game {
             // Updates the grid to show the new letter positions
             drawGrid();
         }
+    }
+
+    private void GameOverScreen(){
+        GraphicsText text = new GraphicsText("GAME OVER", CANVAS_WIDTH/4 + 16, CANVAS_HEIGHT/2); 
+        text.setFillColor(new Color(128,5,0));
+        text.setFontSize(60);
+        text.setStrokeWidth(5);
+        canvas.add(text);
     }
 
     /**
@@ -146,6 +157,9 @@ public class Game {
 
                 Rectangle rect = new Rectangle(0, 0, sideLength, sideLength);
                 rect.setStrokeWidth(5);
+                if(row<grid.redLine()+1){
+                    rect.setFillColor(new Color(255, 114, 118));
+                }
                 grid.getNode(row, col).setGraphics(group);
                 group.add(rect);
 
@@ -161,6 +175,12 @@ public class Game {
             row++;
         }
         canvas.add(background);
+
+        double lineNum = topLeft.getY() + sideLength*grid.redLine() + sideLength;
+        Line redLine = new Line(topLeft.getX(), lineNum, topLeft.getX()+sideLength*5, lineNum);
+        redLine.setStrokeColor(new Color(255, 0, 0));
+        redLine.setStrokeWidth(5);
+        canvas.add(redLine);
     }
 
     /**
