@@ -3,6 +3,7 @@ import java.awt.Color;
 
 public class Game {
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2}; //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
     // private final static String easyWords = "BAT";
 
     private final static int CANVAS_WIDTH = 800;
@@ -102,6 +103,9 @@ public class Game {
         }
     }
 
+    /**
+     * Shows "GAME OVER" in big red letters when called
+     */
     private void GameOverScreen(){
         GraphicsText text = new GraphicsText("GAME OVER", CANVAS_WIDTH/4 + 16, CANVAS_HEIGHT/2); 
         text.setFillColor(new Color(128,5,0));
@@ -160,14 +164,20 @@ public class Game {
                 if(row<grid.redLine()+1){
                     rect.setFillColor(new Color(255, 114, 118));
                 }
-                grid.getNode(row, col).setGraphics(group);
-                group.add(rect);
+                else{
+                    rect.setFillColor(new Color(118, 114, 255));
+                }
+                grid.getNode(row, col).setGraphics(group);        
 
                 GraphicsText text = new GraphicsText(grid.getNode(row, col).getValue(), 0, 0);
                 text.setCenter(sideLength / 2, sideLength / 2);
                 text.setFontSize(20);
+                if(grid.getNode(row,col).getValue() != null){
+                    rect.setFillColor(findColor(grid.getNode(row,col).getValue()));
+                }
+                group.add(rect);
                 group.add(text);
-
+                
                 canvas.add(group);
                 
                 col++;
@@ -183,12 +193,53 @@ public class Game {
         canvas.add(redLine);
     }
 
+    private Color findColor(String letter){
+        int points = alphabet.indexOf(letter);
+        Color col;
+        points = 19 - distribution[points];
+        //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
+        if(points == 1){
+            col = new Color(170,219,30);   //bright green
+        }
+        else if(points == 6){
+            col = new Color(113,169,44);     //corn green
+        }
+        else if(points == 7){
+            col = new Color(0,155,119);     //emerald green
+        }
+        else if(points == 8){
+            col = new Color(0,124,128);     //teal blue
+        }
+        else if(points == 10){
+            col = new Color(155,211,221);  //baby blue
+        }
+        else if(points == 11){
+            col = new Color(5,195,221);    //aqua blue
+        }
+        else if(points == 13){
+            col = new Color(0,78,255);      //bright blue
+        }
+        else if(points == 14){
+            col = new Color(8,39,245);      //blue screen of death
+        }
+        else if(points == 15){
+            col = new Color(0,20,64);       //cetacean blue
+        }
+        else if(points == 16){
+            col = new Color(75,54,95);      //advent purple
+        }
+        else{
+            col = new Color(128,49,167);    //grape purple
+        }
+        return col;
+
+    }
+
     /**
      * Using the letter distribution in Banangrams as a reference, gives a random letter.
      * @return
      */
     private static String getRandomLetter() {
-        int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2};
         int random = (int) (Math.random() * 144); // Integer from 0 to 143
         int total = 0;
 

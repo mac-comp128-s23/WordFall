@@ -8,7 +8,7 @@ import java.util.Map;
 public class QGrid {
     private final int width = 5;
     private final int height = 8;
-    private final int redLine = 6;
+    private final int redLine = 5;
 
     private final static int MIN_WORD_LENGTH = 2;
 
