@@ -75,7 +75,8 @@ public class Game {
             // Checks if the letter has landed. If so, start a new letter falling from the top center space.
             if(letterHasLanded) {
                 String letter = getRandomLetter();
-                grid.setNode(0, 2, letter);
+                int letterScore = getLetterScore(letter);
+                grid.setNode(0, 2, letterScore, letter);
 
                 fallingLetterRow = 0;
                 fallingLetterCol = 2;
@@ -84,7 +85,7 @@ public class Game {
             // If it hasn't landed, try to make it fall by one step. If this can't happen, update letterHasLanded.
             } else {
                 QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
-                if(!fallingNode.setLower(fallingNode.getValue())) {
+                if(!fallingNode.setLower(fallingNode.getValue(), fallingNode.getPoints())) {
                     letterHasLanded = true;
                     totalLettersLanded++;
 
@@ -129,11 +130,11 @@ public class Game {
         if(key.equals("DOWN_ARROW")) {
             stepInterval = 10;
         } else if(key.equals("LEFT_ARROW")) {
-            if(fallingNode.setLeft(fallingNode.getValue())) {
+            if(fallingNode.setLeft(fallingNode.getValue(), fallingNode.getPoints())) {
                 fallingLetterCol--;
             }
         } else if(key.equals("RIGHT_ARROW")) {
-            if(fallingNode.setRight(fallingNode.getValue())) {
+            if(fallingNode.setRight(fallingNode.getValue(), fallingNode.getPoints())) {
                 fallingLetterCol++;
             }
         }
@@ -148,8 +149,18 @@ public class Game {
 
         Point topLeft = new Point((CANVAS_WIDTH - GAME_WIDTH) / 2, 150);
         int sideLength = GAME_WIDTH / 5;
+        int strokeWidth = 8;
         Rectangle background = new Rectangle(topLeft.getX(), topLeft.getY(), GAME_WIDTH, GAME_HEIGHT);
-        background.setStrokeWidth(10);
+        background.setStrokeWidth(strokeWidth);
+
+        GraphicsGroup scoreGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY()-60);
+        Rectangle scoreBoard = new Rectangle(0, 0, GAME_WIDTH, 60);
+        scoreBoard.setStrokeWidth(strokeWidth);
+        GraphicsText score = new GraphicsText("Score: " + grid.getScore(), 0, 0);
+        score.setCenter(GAME_WIDTH/2, 30);
+        scoreGroup.add(score);   
+        scoreGroup.add(scoreBoard);
+        canvas.add(scoreGroup);
 
         int row = 0;
         int col = 0;
@@ -172,11 +183,22 @@ public class Game {
                 GraphicsText text = new GraphicsText(grid.getNode(row, col).getValue(), 0, 0);
                 text.setCenter(sideLength / 2, sideLength / 2);
                 text.setFontSize(20);
-                if(grid.getNode(row,col).getValue() != null){
-                    rect.setFillColor(findColor(grid.getNode(row,col).getValue()));
+                text.setStrokeWidth(1);
+                
+                if(grid.getNode(row, col).getValue() != null){
+                    rect.setFillColor(findColor(grid.getNode(row, col).getPoints()));
                 }
+
+                GraphicsText points = new GraphicsText("" + grid.getNode(row, col).getPoints(), 0, 0);
+                if(grid.getNode(row, col).getPoints() == 0){
+                    points = new GraphicsText("", 0, 0);
+                }
+                points.setCenter(sideLength-15, sideLength-10);
+                
+
                 group.add(rect);
                 group.add(text);
+                group.add(points);
                 
                 canvas.add(group);
                 
@@ -193,10 +215,13 @@ public class Game {
         canvas.add(redLine);
     }
 
-    private Color findColor(String letter){
-        int points = alphabet.indexOf(letter);
+    /**
+     * Returns the correct color for the point value of that letter.
+     * @param letter
+     * @return
+     */
+    private Color findColor(int points){
         Color col;
-        points = 19 - distribution[points];
         //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
         if(points == 1){
             col = new Color(170,219,30);   //bright green
@@ -223,7 +248,7 @@ public class Game {
             col = new Color(8,39,245);      //blue screen of death
         }
         else if(points == 15){
-            col = new Color(0,20,64);       //cetacean blue
+            col = new Color(33,46,82);       //cetacean blue         changed to cloud burst blue
         }
         else if(points == 16){
             col = new Color(75,54,95);      //advent purple
@@ -250,6 +275,12 @@ public class Game {
             }
         }
         return "";
+    }
+
+    private static int getLetterScore(String letter){
+        int points = alphabet.indexOf(letter);
+        points = 19 - distribution[points];
+        return points;
     }
 
     /**

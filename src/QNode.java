@@ -8,7 +8,9 @@ import java.util.Iterator;
 public class QNode<E> {
     private QNode<E> upper, lower, left, right;
     private E value;
+    private int points;
     private GraphicsText text;
+    private GraphicsText pointText;
     private Rectangle rect;
 
     public QNode() {
@@ -17,7 +19,9 @@ public class QNode<E> {
         this.left = null;
         this.right = null;
         this.value = null;
+        this.points = 0;
         this.text = new GraphicsText();
+        this.pointText = new GraphicsText();
         this.rect = new Rectangle(0, 0, 0, 0);
     }
 
@@ -29,6 +33,7 @@ public class QNode<E> {
         GraphicsGroup group = new GraphicsGroup();
         group.add(rect);
         group.add(text);
+        group.add(pointText);
         return group;
     }
 
@@ -47,19 +52,38 @@ public class QNode<E> {
             text = (GraphicsText) it.next();
             System.out.println("GraphicsText has been changed.");
         }
+        if(it.hasNext()) {
+            if(it.next().equals("0")){
+                pointText = new GraphicsText("");
+            }else{
+                pointText = (GraphicsText) it.next();
+            }
+            System.out.println("Points Graphics has been changed");
+        }
     }
 
     public E getValue() {
         return value;
     }
 
-    public void setValue(E element) {
+    public void setValue(E element, int p) {
         if(element == null) {
             this.text.setText("");
         } else {
             this.text.setText((String)element);
         }
         this.value = element;
+        if(p == 0){
+            this.pointText.setText("");
+        } else {
+            this.pointText.setText("" + p);
+        }
+        this.points = p;
+    }
+
+    public int getPoints(){
+        
+        return points;
     }
 
     public QNode<E> getLeft() {
@@ -78,41 +102,41 @@ public class QNode<E> {
         return lower;
     }
 
-    public boolean setLeft(E element) {
+    public boolean setLeft(E element, int p) {
         if(this.left != null)
             if(this.left.getValue() == null){
-                this.left.setValue(element);
-                this.setValue(null);
+                this.left.setValue(element, p);
+                this.setValue(null, 0);
                 return true;
             }
         return false;
     }
 
-    public boolean setRight(E element) {
+    public boolean setRight(E element, int p) {
         if(this.right != null)
             if(this.right.getValue() == null){
-                this.right.setValue(element);
-                this.setValue(null);
+                this.right.setValue(element, p);
+                this.setValue(null, 0);
                 return true;
             }
         return false;
     }
 
-    public boolean setUpper(E element) {
+    public boolean setUpper(E element, int p) {
         if(this.upper != null)
             if(this.upper.getValue() == null){
-                this.upper.setValue(element);
-                this.setValue(null);
+                this.upper.setValue(element, p);
+                this.setValue(null, 0);
                 return true;
             }
         return false;
     }
 
-    public boolean setLower(E element) {
+    public boolean setLower(E element, int p) {
         if(this.lower != null)
             if(this.lower.getValue() == null){
-                this.lower.setValue(element);
-                this.setValue(null);
+                this.lower.setValue(element, p);
+                this.setValue(null, 0);
                 return true;
             }
         return false;

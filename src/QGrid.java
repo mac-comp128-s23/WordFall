@@ -15,6 +15,7 @@ public class QGrid {
     private ArrayList<ArrayList<QNode<String>>> grid;
     private Map<Integer, ArrayList<String>> dictionary;
     private boolean gameOver;
+    private int score;
 
     /*
      * Constructor for QNode grid. First nested loop instantiates each ArrayList within each Arraylist.
@@ -57,13 +58,18 @@ public class QGrid {
         return grid.get(row).get(col);
     }
 
-    public void setNode(int row, int col, String value) {
-        grid.get(row).get(col).setValue(value);
+    public void setNode(int row, int col, int points, String value) {
+        getNode(row, col).setValue(value, points);
     }
 
     public ArrayList<ArrayList<QNode<String>>> getGrid() {
         return grid;
     }
+
+    public int getScore(){
+        return score;
+    }
+    
     public boolean gameIsOver(){
         return gameOver;
     }
@@ -175,10 +181,11 @@ public class QGrid {
             return;
         }
         for(int i = 0; i < list.size(); i++){
+            score += list.get(i).getPoints();
             for(int row = 0; row < height; row++){
                 for(int col = 0; col < width; col++){
                     if(getNode(row,col) == (list.get(i))){
-                        getNode(row,col).setValue(null);
+                        getNode(row,col).setValue(null, 0);
                     }
                 }
             }
@@ -186,8 +193,8 @@ public class QGrid {
 
         for(int row = height-1; row >= 0; row--){
             for(int col = width-1; col >= 0; col--){
-                if(getNode(row,col).setLower(getNode(row,col).getValue())){
-                    getNode(row,col).setValue(null);
+                if(getNode(row,col).setLower(getNode(row,col).getValue(), getNode(row,col).getPoints())){
+                    getNode(row,col).setValue(null, 0);
                 }
             }
         }
