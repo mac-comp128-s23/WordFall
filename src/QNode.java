@@ -82,7 +82,6 @@ public class QNode<E> {
     }
 
     public int getPoints(){
-        
         return points;
     }
 

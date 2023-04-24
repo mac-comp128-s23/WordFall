@@ -12,6 +12,8 @@ public class Game {
     private final static int GAME_WIDTH = 375;
     private final static int GAME_HEIGHT = 600;
 
+    private LetterQueue queue;
+
     private long stepInterval; // in milliseconds
     private long lastStepTime;
     private long currentTime;
@@ -31,6 +33,7 @@ public class Game {
      * Creating a new Game object causes the window to appear and the game to begin running.
      */
     public Game() {
+        queue = new LetterQueue();
         letterHasLanded = true;
         gameIsRunning = true;
         stepInterval = 1000;
@@ -74,9 +77,12 @@ public class Game {
 
             // Checks if the letter has landed. If so, start a new letter falling from the top center space.
             if(letterHasLanded) {
-                String letter = getRandomLetter();
-                int letterScore = getLetterScore(letter);
-                grid.setNode(0, 2, letterScore, letter);
+                // Takes the next node from the queue as the one to place on the grid
+                QNode<String> next = queue.next();
+
+                String letter = next.getValue();
+                int letterPoints = next.getPoints();
+                grid.setNode(0, 2, letterPoints, letter);
 
                 fallingLetterRow = 0;
                 fallingLetterCol = 2;
@@ -264,7 +270,7 @@ public class Game {
      * Using the letter distribution in Banangrams as a reference, gives a random letter.
      * @return
      */
-    private static String getRandomLetter() {
+    public static String getRandomLetter() {
         int random = (int) (Math.random() * 144); // Integer from 0 to 143
         int total = 0;
 
@@ -277,7 +283,7 @@ public class Game {
         return "";
     }
 
-    private static int getLetterScore(String letter){
+    public static int getLetterScore(String letter){
         int points = alphabet.indexOf(letter);
         points = 19 - distribution[points];
         return points;

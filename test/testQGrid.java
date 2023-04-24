@@ -17,7 +17,7 @@ public class testQGrid {
     @Test
     public void testNodeLinks() {
         QGrid grid = new QGrid();
-        grid.setNode(2, 2, ":)");
+        grid.setNode(2, 2, 0, ":)");
 
         QNode<String> node = grid.getNode(2, 2);
         assertEquals(node.getLeft().getValue(), grid.getNode(1, 2).getValue());
