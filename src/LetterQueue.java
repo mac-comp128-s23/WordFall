@@ -9,10 +9,9 @@ public class LetterQueue {
 
     public LetterQueue() {
         queue = new ArrayDeque<QNode<String>>(length);
-        group = new GraphicsGroup();
+        group = new GraphicsGroup(Game.CANVAS_WIDTH / 2 + Game.GAME_WIDTH / 2, 150);
 
         initialSetup();
-        updateGraphics();
     }
 
     /**
@@ -33,6 +32,7 @@ public class LetterQueue {
      * @return
      */
     public QNode<String> next() {
+        // group.remove(queue.peek().getGraphics());
         QNode<String> output = queue.remove();
         updateQueue();
         return output;
@@ -41,13 +41,9 @@ public class LetterQueue {
     private void updateQueue() {
         QNode<String> newNode = new QNode<String>();
         String newLetter = Game.getRandomLetter();
-        newNode.setValue(newLetter, 0);
+        newNode.setValue(newLetter, Game.getLetterScore(newLetter));
         queue.add(newNode);
-    }
-
-    private void updateGraphics() {
-        //TODO: update queue graphics upon removing a node
-    }
+    } 
 
     public GraphicsGroup getGraphics() {
         return group;

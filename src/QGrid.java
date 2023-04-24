@@ -8,7 +8,7 @@ import java.util.Map;
 public class QGrid {
     private final int width = 5;
     private final int height = 8;
-    private final int redLine = 5;
+    private final int redLine = 2;
 
     private final static int MIN_WORD_LENGTH = 2;
 
@@ -98,7 +98,7 @@ public class QGrid {
 
         // Finding words horizontally
         for(int wordLength = width; wordLength >= MIN_WORD_LENGTH; wordLength--) {
-            for(int startIndex = 0; startIndex + 1 <= width; startIndex++) {
+            for(int startIndex = 0; startIndex + MIN_WORD_LENGTH < width; startIndex++) {
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
                 ArrayList<QNode<String>> wordNodes = new ArrayList<QNode<String>>();
@@ -110,13 +110,11 @@ public class QGrid {
                         word.append(temp.getValue());
                         wordNodes.add(temp);
                         temp = temp.getRight();
-                        
                     }
                 }
-                //System.out.println(word.toString());
 
                 if(dictionary.get(wordLength).contains(word.toString().toLowerCase())) {
-                    for(int i = 0; i < wordNodes.size(); i ++){
+                    for(int i = 0; i < wordNodes.size(); i++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
                         }

@@ -4,13 +4,14 @@ import java.awt.Color;
 public class Game {
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2}; //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
+    private final static int[] points = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
     // private final static String easyWords = "BAT";
 
-    private final static int CANVAS_WIDTH = 800;
-    private final static int CANVAS_HEIGHT = 800;
+    public final static int CANVAS_WIDTH = 800;
+    public final static int CANVAS_HEIGHT = 800;
 
-    private final static int GAME_WIDTH = 375;
-    private final static int GAME_HEIGHT = 600;
+    public final static int GAME_WIDTH = 375;
+    public final static int GAME_HEIGHT = 600;
 
     private LetterQueue queue;
 
@@ -34,6 +35,7 @@ public class Game {
      */
     public Game() {
         queue = new LetterQueue();
+
         letterHasLanded = true;
         gameIsRunning = true;
         stepInterval = 1000;
@@ -168,6 +170,14 @@ public class Game {
         scoreGroup.add(scoreBoard);
         canvas.add(scoreGroup);
 
+        GraphicsGroup queueGroup = queue.getGraphics();
+        for(double y = topLeft.getY(); y < topLeft.getY() + 5 * sideLength; y+= sideLength) {
+            GraphicsGroup group = new GraphicsGroup(CANVAS_WIDTH / 2 + GAME_WIDTH / 2, y);
+
+            Rectangle rect = new Rectangle(0, 0, sideLength, sideLength);
+            rect.setStrokeWidth(5);
+        }
+
         int row = 0;
         int col = 0;
 
@@ -229,41 +239,40 @@ public class Game {
     private Color findColor(int points){
         Color col;
         //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
-        if(points == 1){
+        if(points == 10){
             col = new Color(170,219,30);   //bright green
         }
-        else if(points == 6){
+        else if(points == 20){
             col = new Color(113,169,44);     //corn green
         }
-        else if(points == 7){
+        else if(points == 30){
             col = new Color(0,155,119);     //emerald green
         }
-        else if(points == 8){
+        else if(points == 40){
             col = new Color(0,124,128);     //teal blue
         }
-        else if(points == 10){
+        else if(points == 50){
             col = new Color(155,211,221);  //baby blue
         }
-        else if(points == 11){
+        else if(points == 80){
             col = new Color(5,195,221);    //aqua blue
         }
-        else if(points == 13){
-            col = new Color(0,78,255);      //bright blue
-        }
-        else if(points == 14){
+        // else if(points == 10){
+        //     col = new Color(0,78,255);      //bright blue
+        // }
+        else{
             col = new Color(8,39,245);      //blue screen of death
         }
-        else if(points == 15){
-            col = new Color(33,46,82);       //cetacean blue         changed to cloud burst blue
-        }
-        else if(points == 16){
-            col = new Color(75,54,95);      //advent purple
-        }
-        else{
-            col = new Color(128,49,167);    //grape purple
-        }
+        // else if(points == 15){
+        //     col = new Color(33,46,82);       //cetacean blue         changed to cloud burst blue
+        // }
+        // else if(points == 16){
+        //     col = new Color(75,54,95);      //advent purple
+        // }
+        // else{
+        //     col = new Color(128,49,167);    //grape purple
+        // }
         return col;
-
     }
 
     /**
@@ -284,9 +293,12 @@ public class Game {
     }
 
     public static int getLetterScore(String letter){
-        int points = alphabet.indexOf(letter);
-        points = 19 - distribution[points];
-        return points;
+        // int points = alphabet.indexOf(letter);
+        // points = 19 - distribution[points];
+        // return points;
+        
+        //Temporarily editing to have the same scores as Scrabble:
+        return points[alphabet.indexOf(letter)]*10;
     }
 
     /**
@@ -298,10 +310,10 @@ public class Game {
      */
     private void recalculateStepInterval() {
         // The two functions first intersect at x = 254.306, so after that point, switch to exp. decay.
-        if(totalLettersLanded <= 254) {
-            this.stepInterval = (int) (450 * Math.cos(totalLettersLanded / 200.0) + 550);
+        if(grid.getScore() <= 254) {
+            this.stepInterval = (int) (450 * Math.cos(grid.getScore() / 200.0) + 550);
         } else {
-            this.stepInterval =  (int) (1000 * Math.pow(0.9985, totalLettersLanded));
+            this.stepInterval =  (int) (1000 * Math.pow(0.9985, grid.getScore()));
         }
     }
 
