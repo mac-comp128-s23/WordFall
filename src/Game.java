@@ -170,13 +170,7 @@ public class Game {
         scoreGroup.add(scoreBoard);
         canvas.add(scoreGroup);
 
-        GraphicsGroup queueGroup = queue.getGraphics();
-        for(double y = topLeft.getY(); y < topLeft.getY() + 5 * sideLength; y+= sideLength) {
-            GraphicsGroup group = new GraphicsGroup(CANVAS_WIDTH / 2 + GAME_WIDTH / 2, y);
-
-            Rectangle rect = new Rectangle(0, 0, sideLength, sideLength);
-            rect.setStrokeWidth(5);
-        }
+        canvas.add(queue.getGraphics());
 
         int row = 0;
         int col = 0;
