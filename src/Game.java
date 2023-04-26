@@ -1,5 +1,6 @@
 import edu.macalester.graphics.*;
 import java.awt.Color;
+import java.net.URISyntaxException;
 
 public class Game {
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -105,7 +106,6 @@ public class Game {
 
             // Recalculate the step interval before continuing
             recalculateStepInterval();
-            System.out.println(totalLettersLanded + " letters, interval = " + stepInterval);
 
             // Updates the grid to show the new letter positions
             drawGrid();
@@ -155,11 +155,31 @@ public class Game {
     private void drawGrid() {
         canvas.removeAll();
 
+        Image img;
+        try {
+            // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
+            img = new Image(0, 0, "space.png");
+            canvas.add(img);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Point topLeft = new Point((CANVAS_WIDTH - GAME_WIDTH) / 2, 150);
         int sideLength = GAME_WIDTH / 5;
         int strokeWidth = 8;
         Rectangle background = new Rectangle(topLeft.getX(), topLeft.getY(), GAME_WIDTH, GAME_HEIGHT);
         background.setStrokeWidth(strokeWidth);
+
+        GraphicsGroup titleGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY() - 120);
+        // Rectangle titleRect = new Rectangle(0, 0, GAME_WIDTH, 60);
+        GraphicsText title = new GraphicsText("WORD CATCHER!!!");
+        title.setFontSize(30);
+        title.setStrokeWidth(2);
+        title.setCenter(GAME_WIDTH / 2, 30);
+        // titleGroup.add(titleRect);
+        titleGroup.add(title);
+
+        canvas.add(titleGroup);
 
         GraphicsGroup scoreGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY()-60);
         Rectangle scoreBoard = new Rectangle(0, 0, GAME_WIDTH, 60);
@@ -230,7 +250,7 @@ public class Game {
      * @param letter
      * @return
      */
-    private Color findColor(int points){
+    public static Color findColor(int points){
         Color col;
         //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
         if(points == 10){
@@ -307,8 +327,10 @@ public class Game {
         if(grid.getScore() <= 254) {
             this.stepInterval = (int) (450 * Math.cos(grid.getScore() / 200.0) + 550);
         } else {
-            this.stepInterval =  (int) (1000 * Math.pow(0.9985, grid.getScore()));
+            this.stepInterval = (int) (1000 * Math.pow(0.9985, grid.getScore()));
         }
+
+        // this.stepInterval = Math.min((int) (450 * Math.cos(grid.getScore() / 200.0) + 550), (int) (1000 * Math.pow(0.9985, grid.getScore())));
     }
 
     public static void main(String[] args) {

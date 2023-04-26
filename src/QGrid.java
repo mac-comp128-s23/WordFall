@@ -10,7 +10,7 @@ public class QGrid {
     private final int height = 8;
     private final int redLine = 2;
 
-    private final static int MIN_WORD_LENGTH = 2;
+    private final static int MIN_WORD_LENGTH = 3;
 
     private ArrayList<ArrayList<QNode<String>>> grid;
     private Map<Integer, ArrayList<String>> dictionary;

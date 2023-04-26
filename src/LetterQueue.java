@@ -12,7 +12,7 @@ public class LetterQueue {
 
     public LetterQueue() {
         queue = new ArrayDeque<QNode<String>>(length);
-        group = new GraphicsGroup(Game.CANVAS_WIDTH / 2 + Game.GAME_WIDTH / 2, 150);
+        group = new GraphicsGroup(topLeft.getX(), 150);
 
         initialSetup();
     }
@@ -49,23 +49,34 @@ public class LetterQueue {
     } 
 
     public GraphicsGroup getGraphics() {
+        group = new GraphicsGroup(topLeft.getX(), 150);
+        GraphicsText label = new GraphicsText("Next up:");
+        label.setFontSize(20);
+        label.setCenter(sideLength / 2, -20);
+        group.add(label);
+
         Queue<QNode<String>> copy = new ArrayDeque<QNode<String>>(queue);
-        for(int y = 150; y < 150 + sideLength * 5; y += sideLength) {
-            GraphicsGroup pointGroup = new GraphicsGroup(topLeft.getX(), y);
+        for(int y = 0; y < sideLength * 5; y += sideLength) {
+            GraphicsGroup pointGroup = new GraphicsGroup(0, y);
+            QNode<String> tempNode = copy.poll();
+
             Rectangle rect = new Rectangle(0, 0, sideLength, sideLength);
             rect.setStrokeWidth(5);
-            pointGroup.add(rect);
-
-            QNode<String> tempNode = copy.poll();
+            rect.setFillColor(Game.findColor(tempNode.getPoints()));
 
             GraphicsText text = new GraphicsText(tempNode.getValue());
             text.setCenter(sideLength / 2, sideLength / 2);
-            pointGroup.add(text);
 
-            pointGroup.add(rect, y, y);
+            // pointGroup.add(rect, y, y);
             GraphicsText pointText = new GraphicsText(Integer.toString(tempNode.getPoints()));
             pointText.setCenter(sideLength - 15, sideLength - 10);
+            
+
+            pointGroup.add(rect);
+            pointGroup.add(text);
             pointGroup.add(pointText);
+
+            group.add(pointGroup);
         }
         return group;
     }
