@@ -1,12 +1,12 @@
 import edu.macalester.graphics.*;
 import java.awt.Color;
-import java.net.URISyntaxException;
 
 public class Game {
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2}; //1, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17
+    private final static String doubles = "ER,UN,IM,CO,SH,TR,QU,AN";
+    private final static String triples = "PRE,DIS,NON,MIS,ING,TRI,SUB,ISH";
+    private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2};
     private final static int[] points = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
-    // private final static String easyWords = "BAT";
 
     public final static int CANVAS_WIDTH = 800;
     public final static int CANVAS_HEIGHT = 800;
@@ -116,10 +116,11 @@ public class Game {
      * Shows "GAME OVER" in big red letters when called
      */
     private void GameOverScreen(){
-        GraphicsText text = new GraphicsText("GAME OVER", CANVAS_WIDTH/4 + 16, CANVAS_HEIGHT/2); 
+        GraphicsText text = new GraphicsText("GAME OVER"); 
         text.setFillColor(new Color(128,5,0));
         text.setFontSize(60);
         text.setStrokeWidth(5);
+        text.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
         canvas.add(text);
     }
 
@@ -156,18 +157,17 @@ public class Game {
         canvas.removeAll();
 
         Image img;
-        try {
-            // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
-            img = new Image(0, 0, "space.png");
-            canvas.add(img);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
+        img = new Image(0, 0, "space.png");
+        img.rotateBy(90);
+        img.moveBy(-100, 0);
+        img.setScale(1.3);
+        canvas.add(img);
 
         Point topLeft = new Point((CANVAS_WIDTH - GAME_WIDTH) / 2, 150);
         int sideLength = GAME_WIDTH / 5;
         int strokeWidth = 8;
-        Rectangle background = new Rectangle(topLeft.getX(), topLeft.getY(), GAME_WIDTH, GAME_HEIGHT);
+        Rectangle background = new Rectangle(topLeft.getX(), topLeft.getY()-60, GAME_WIDTH, GAME_HEIGHT+60);
         background.setStrokeWidth(strokeWidth);
 
         GraphicsGroup titleGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY() - 120);
@@ -182,12 +182,21 @@ public class Game {
         canvas.add(titleGroup);
 
         GraphicsGroup scoreGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY()-60);
-        Rectangle scoreBoard = new Rectangle(0, 0, GAME_WIDTH, 60);
-        scoreBoard.setStrokeWidth(strokeWidth);
+        // Rectangle scoreBoard = new Rectangle(0, 0, GAME_WIDTH, 60);
+        // scoreBoard.setFillColor(new Color(172, 79, 188));
+        // scoreBoard.setStrokeWidth(5);
+        Image scoreBoard = new Image("red.png");
+        scoreBoard.setScale(1.25, 1);
+        scoreBoard.moveBy(40, 0);
+        // scoreBoard.setAnchor(scoreBoard.getWidth() / 2, scoreBoard.getHeight() / 2);
+        // scoreBoard.setScale(375.0 / 300.0, 60.0 / 168.0);
+        // scoreBoard.setPosition(0, 0);
+
         GraphicsText score = new GraphicsText("Score: " + grid.getScore(), 0, 0);
+        score.setStrokeWidth(1);
         score.setCenter(GAME_WIDTH/2, 30);
-        scoreGroup.add(score);   
         scoreGroup.add(scoreBoard);
+        scoreGroup.add(score);
         canvas.add(scoreGroup);
 
         canvas.add(queue.getGraphics());

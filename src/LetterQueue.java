@@ -65,6 +65,7 @@ public class LetterQueue {
             rect.setFillColor(Game.findColor(tempNode.getPoints()));
 
             GraphicsText text = new GraphicsText(tempNode.getValue());
+            text.setStrokeWidth(1);
             text.setCenter(sideLength / 2, sideLength / 2);
 
             // pointGroup.add(rect, y, y);
