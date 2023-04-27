@@ -2,12 +2,6 @@ import edu.macalester.graphics.*;
 import java.awt.Color;
 
 public class Game {
-    private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final static String doubles = "ER,UN,IM,CO,SH,TR,QU,AN";
-    private final static String triples = "PRE,DIS,NON,MIS,ING,TRI,SUB,ISH";
-    private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2};
-    private final static int[] points = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
-
     public final static int CANVAS_WIDTH = 800;
     public final static int CANVAS_HEIGHT = 800;
 
@@ -24,28 +18,25 @@ public class Game {
     private int fallingLetterCol;
 
     private CanvasWindow canvas;
-    private QGrid grid;
+    public QGrid grid;
     private boolean gameIsRunning;
     private boolean letterHasLanded;
-
-    private int totalLettersLanded;
 
     /**
      * The game constructor. 
      * Creating a new Game object causes the window to appear and the game to begin running.
      */
     public Game() {
-        queue = new LetterQueue();
+        grid = new QGrid();
+        queue = new LetterQueue(this);
 
         letterHasLanded = true;
         gameIsRunning = true;
         stepInterval = 1000;
         lastStepTime = System.currentTimeMillis();
         currentTime = System.currentTimeMillis();
-        totalLettersLanded = 0;
 
         canvas = new CanvasWindow("Word Capture", CANVAS_WIDTH, CANVAS_HEIGHT);
-        grid = new QGrid();
         drawGrid();
 
         // The lambda functions that run the game:
@@ -96,7 +87,6 @@ public class Game {
                 QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
                 if(!fallingNode.setLower(fallingNode.getValue(), fallingNode.getPoints())) {
                     letterHasLanded = true;
-                    totalLettersLanded++;
 
                     grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol), letterHasLanded);
                 } else {
@@ -277,12 +267,12 @@ public class Game {
         else if(points == 50){
             col = new Color(155,211,221);  //baby blue
         }
-        else if(points == 80){
+        else if(points == 60){
             col = new Color(5,195,221);    //aqua blue
         }
-        // else if(points == 10){
-        //     col = new Color(0,78,255);      //bright blue
-        // }
+        else if(points == 80){
+            col = new Color(0,78,255);      //bright blue
+        }
         else{
             col = new Color(8,39,245);      //blue screen of death
         }
@@ -298,30 +288,8 @@ public class Game {
         return col;
     }
 
-    /**
-     * Using the letter distribution in Banangrams as a reference, gives a random letter.
-     * @return
-     */
-    public static String getRandomLetter() {
-        int random = (int) (Math.random() * 144); // Integer from 0 to 143
-        int total = 0;
-
-        for(int outputIndex = 0; outputIndex < 26; outputIndex++) {
-            total += distribution[outputIndex];
-            if(total >= random) {
-                return alphabet.substring(outputIndex, outputIndex + 1);
-            }
-        }
-        return "";
-    }
-
-    public static int getLetterScore(String letter){
-        // int points = alphabet.indexOf(letter);
-        // points = 19 - distribution[points];
-        // return points;
-        
-        //Temporarily editing to have the same scores as Scrabble:
-        return points[alphabet.indexOf(letter)]*10;
+    public int getLetterScore(String letter){
+        return queue.getLetterScore(letter);
     }
 
     /**
@@ -344,10 +312,5 @@ public class Game {
 
     public static void main(String[] args) {
         new Game();
-
-        // Testing letter distrubution
-        // for(int i = 0; i < 100; i++) {
-        //     System.out.println(getRandomLetter());
-        // }
     }
 }

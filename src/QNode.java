@@ -53,7 +53,7 @@ public class QNode<E> {
             System.out.println("GraphicsText has been changed.");
         }
         if(it.hasNext()) {
-            if(it.next().equals("0")){
+            if(it.next().toString().equals("0")){
                 pointText = new GraphicsText("");
             }else{
                 pointText = (GraphicsText) it.next();

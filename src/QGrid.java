@@ -22,6 +22,7 @@ public class QGrid {
      * Second nested loop links all the nodes to their neighbors.
      */
     public QGrid() {
+        score = 0;
         dictionary = readFile("src/wordlist.txt");
         grid = new ArrayList<ArrayList<QNode<String>>>();
 
@@ -113,7 +114,9 @@ public class QGrid {
                     }
                 }
 
-                if(dictionary.get(wordLength).contains(word.toString().toLowerCase())) {
+                System.out.println(word);
+
+                if(word.length() < 8 && word.length() > 1 && dictionary.get(word.length()).contains(word.toString().toLowerCase())) {
                     for(int i = 0; i < wordNodes.size(); i++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
@@ -135,14 +138,14 @@ public class QGrid {
                 }
 
                 for(int step = 0; step < wordLength; step++) {
-                    if(temp != null){
+                    if(temp != null) {
                         word.append(temp.getValue());
                         wordNodes.add(temp);
                         temp = temp.getUpper();
                     }
                 }
 
-                if(dictionary.get(wordLength).contains(reverse(word.toString().toLowerCase()))) {
+                if(word.length() < 8 && word.length() > 1 && dictionary.get(word.length()).contains(reverse(word.toString().toLowerCase()))) {
                     for(int i = 0; i < wordNodes.size(); i ++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
