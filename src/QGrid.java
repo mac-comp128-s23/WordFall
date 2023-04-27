@@ -99,7 +99,7 @@ public class QGrid {
 
         // Finding words horizontally
         for(int wordLength = width; wordLength >= MIN_WORD_LENGTH; wordLength--) {
-            for(int startIndex = 0; startIndex + MIN_WORD_LENGTH < width; startIndex++) {
+            for(int startIndex = 0; startIndex + MIN_WORD_LENGTH <= width; startIndex++) {
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
                 ArrayList<QNode<String>> wordNodes = new ArrayList<QNode<String>>();
@@ -129,7 +129,7 @@ public class QGrid {
 
         // Finding words vertically
         for(int wordLength = height; wordLength >= MIN_WORD_LENGTH; wordLength--) {
-            for(int startIndex = 0; startIndex + 1 <= height; startIndex++) {
+            for(int startIndex = 0; startIndex + MIN_WORD_LENGTH <= height; startIndex++) {
                 QNode<String> temp = lowerMostNode;
                 StringBuilder word = new StringBuilder("");
                 ArrayList<QNode<String>> wordNodes = new ArrayList<QNode<String>>();
@@ -210,13 +210,16 @@ public class QGrid {
     public void afterWordSettles(QNode<String> current, boolean letterHasLanded) {
         ArrayList<QNode<String>> wordsFound = wordChecker(current);        
 
-        int num = wordsFound.size();
+        boolean wordsLeft = true;
         
-        if(num > 0){
-            
+        while(wordsLeft){
             deleteNodes(wordsFound);
+            wordsLeft = false;
             for(int i = 0; i < width; i ++){
                 wordsFound = wordChecker(getNode(0,i));
+                if(wordsFound.size()>0){
+                    wordsLeft = true;
+                }
                 deleteNodes(wordsFound);
             }
         }
