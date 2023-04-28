@@ -3,6 +3,10 @@ import edu.macalester.graphics.ui.Button;
 
 import java.awt.Color;
 
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.ArrayDeque;
+
 public class Game {
     public final static int CANVAS_WIDTH = 800;
     public final static int CANVAS_HEIGHT = 800;
@@ -191,6 +195,25 @@ public class Game {
         scoreGroup.add(score);
         canvas.add(scoreGroup);
 
+        Rectangle lastWordsRect = new Rectangle(topLeft.getX() + sideLength * 5.5, topLeft.getY() + sideLength * 5.5, sideLength * 2, sideLength * 2.5);
+        lastWordsRect.setStrokeWidth(8);
+        lastWordsRect.setFillColor(new Color(155,211,221));
+        canvas.add(lastWordsRect);
+
+
+        Deque<String> copy = new ArrayDeque<String>(grid.getLastWordsFound());
+        Iterator<String> copyIterator = copy.iterator();
+        int textY = (int)(topLeft.getY() + sideLength * 6);
+        while(copyIterator.hasNext()) {
+            GraphicsText word = new GraphicsText(copyIterator.next());
+            word.setFontSize(20);
+            word.setCenter(topLeft.getX() + sideLength * 6.5, textY);
+            // System.out.println(word.getText() + " AAAAAAAAAA " + copy.size() + " y=" + textY);
+
+            textY += (sideLength / 2);
+            canvas.add(word);
+        }
+
         canvas.add(queue.getGraphics());
 
         int row = 0;
@@ -245,7 +268,6 @@ public class Game {
         redLine.setStrokeWidth(5);
         canvas.add(redLine);
     }
-
 
 
     /**

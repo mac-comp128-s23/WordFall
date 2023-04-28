@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Map;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
 public class QGrid {
     private final int width = 5;
@@ -16,12 +18,14 @@ public class QGrid {
     private Map<Integer, ArrayList<String>> dictionary;
     private boolean gameOver;
     private int score;
+    private Deque<String> lastWordsFound;
 
     /*
      * Constructor for QNode grid. First nested loop instantiates each ArrayList within each Arraylist.
      * Second nested loop links all the nodes to their neighbors.
      */
     public QGrid() {
+        lastWordsFound = new ArrayDeque<String>();
         score = 0;
         dictionary = readFile("src/wordlist.txt");
         grid = new ArrayList<ArrayList<QNode<String>>>();
@@ -81,6 +85,10 @@ public class QGrid {
     public int redLine(){
         return redLine;
     }
+
+    public Deque<String> getLastWordsFound() {
+        return lastWordsFound;
+    }
     
     /**
      * Checks for any words on the grid that have been formed with the placement of the newest letter.
@@ -121,10 +129,18 @@ public class QGrid {
                 if(word.length() < 8 && word.length() > 1 && dictionary.get(word.length()).contains(word.toString().toLowerCase())) {
                     for(int i = 0; i < wordNodes.size(); i++){
                         if(!wordsFound.contains(wordNodes.get(i))){
-                            System.out.println(word);
                             wordsFound.add(wordNodes.get(i));
+                        } else {
+                            wordLength = 0;
+                            startIndex = 10000000;
+                            break;
                         }
                     }
+                    System.out.println(word);
+                    if(lastWordsFound.size() > 3) {
+                        lastWordsFound.removeFirst();
+                    }
+                    lastWordsFound.addLast(word.toString());
                     break;
                 }
             }
@@ -152,9 +168,13 @@ public class QGrid {
                     for(int i = 0; i < wordNodes.size(); i ++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
-                            System.out.println(reverse(word.toString()));
                         }
                     }
+                    if(lastWordsFound.size() > 3) {
+                        lastWordsFound.removeFirst();
+                    }
+                    lastWordsFound.addLast(reverse(word.toString()));
+                    System.out.println(reverse(word.toString()));
                     break;
                 }
             }
