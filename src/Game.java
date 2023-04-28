@@ -40,7 +40,7 @@ public class Game {
      */
     private void startScreen(){
         canvas.removeAll();
-
+    
         Image img;
         // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
         img = new Image(0, 0, "space.png");
@@ -49,12 +49,18 @@ public class Game {
         img.setScale(1.3);
         canvas.add(img);
 
+        GraphicsText title = new GraphicsText("WORD CATCHER");
+        title.setFontSize(50);
+        title.setStrokeWidth(2);
+        title.setCenter(CANVAS_WIDTH / 2, 300);
+        canvas.add(title);
+
         Button startButton = new Button("START");
         startButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
         startButton.setScale(3, 3);
         startButton.onClick( () -> gameStart());
         
-        Rectangle startRect = new Rectangle(CANVAS_WIDTH/2 - 90,CANVAS_HEIGHT/2 - 100, 180, 300);
+        Rectangle startRect = new Rectangle(CANVAS_WIDTH/2 - 90,CANVAS_HEIGHT/2 - 50, 180, 160);
         startRect.setFillColor(new Color(255, 114, 118));
         canvas.add(startRect);
         
