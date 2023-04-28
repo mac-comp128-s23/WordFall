@@ -29,18 +29,18 @@ public class Game {
      * Creating a new Game object causes the window to appear and the game to begin running.
      */
     public Game() {
-        grid = new QGrid();
-        queue = new LetterQueue(this);
-
-        letterHasLanded = true;
-        gameIsRunning = true;
-        stepInterval = 1000;
-        lastStepTime = System.currentTimeMillis();
-        currentTime = System.currentTimeMillis();
-
         canvas = new CanvasWindow("Word Capture", CANVAS_WIDTH, CANVAS_HEIGHT);
+                
+        startScreen();        
+    }
 
-        
+    /**
+     * creates the start screen that holds the start and quit buttons
+     * the start button begins the game and the quit button closes the window.
+     */
+    private void startScreen(){
+        canvas.removeAll();
+
         Image img;
         // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
         img = new Image(0, 0, "space.png");
@@ -50,14 +50,44 @@ public class Game {
         canvas.add(img);
 
         Button startButton = new Button("START");
-        startButton.moveBy(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+        startButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+        startButton.setScale(3, 3);
         startButton.onClick( () -> gameStart());
         
-        canvas.add(startButton);
+        Rectangle startRect = new Rectangle(CANVAS_WIDTH/2 - 90,CANVAS_HEIGHT/2 - 100, 180, 300);
+        startRect.setFillColor(new Color(255, 114, 118));
+        canvas.add(startRect);
         
+        //startGroup.add(startRect);
+        canvas.add(startButton);
+
+        Button quitButton = new Button("QUIT");
+        quitButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 50);
+        quitButton.onClick( () -> canvas.closeWindow());
+        
+        // Rectangle quitRect = new Rectangle(0,0, 40, 20);
+        // startRect.setFillColor(new Color(255, 114, 118));
+        
+        //startGroup.add(quitRect);
+        canvas.add(quitButton);
     }
 
+    /**
+     * restarts the game everytime, whether it is the first game played or next one.
+     */
     private void gameStart(){
+        if(!gameIsRunning){
+            gameIsRunning = true;
+            grid = new QGrid();
+            queue = new LetterQueue(this);
+
+            letterHasLanded = true;
+            gameIsRunning = true;
+            stepInterval = 1000;
+            lastStepTime = System.currentTimeMillis();
+            currentTime = System.currentTimeMillis();
+        }
+
         drawGrid();
 
         // The lambda functions that run the game:
@@ -67,6 +97,37 @@ public class Game {
         });
 
         canvas.animate(() -> moveDown());
+    }
+
+    /**
+     * Shows the pause screen which allows the user to restart or continue playing where they left off
+     */
+    private void pauseScreen(){
+        gameIsRunning = false;
+        Rectangle pauseRect = new Rectangle(CANVAS_WIDTH/2 - 60, CANVAS_HEIGHT/2 - 80, 120, 160);
+        pauseRect.setFillColor(new Color(255, 114, 118));
+
+        GraphicsText pauseText = new GraphicsText("PAUSE");
+        pauseText.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 50);
+        
+        Button continueButton = new Button("CONTINUE");
+        continueButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+        continueButton.onClick( () -> {
+            gameIsRunning = true;
+            drawGrid();
+        });
+
+        Button quitButton = new Button("RESTART");
+        quitButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 40);
+        quitButton.onClick( () -> {
+            gameStart();
+        });
+
+        canvas.add(quitButton);
+        canvas.add(continueButton);
+        canvas.add(pauseRect);
+        canvas.add(pauseText);
+
     }
 
     /**
@@ -83,6 +144,11 @@ public class Game {
         img.moveBy(-100, 0);
         img.setScale(1.3);
         canvas.add(img);
+
+        Button pauseButton = new Button("PAUSE");
+        pauseButton.setCenter(700,55);
+        pauseButton.onClick( () -> pauseScreen());
+        canvas.add(pauseButton);
 
         Point topLeft = new Point((CANVAS_WIDTH - GAME_WIDTH) / 2, 150);
         int sideLength = GAME_WIDTH / 5;
@@ -132,7 +198,7 @@ public class Game {
                 Rectangle rect = new Rectangle(0, 0, sideLength, sideLength);
                 rect.setStrokeWidth(5);
                 if(row<grid.redLine()+1){
-                    rect.setFillColor(new Color(255, 114, 118));
+                    rect.setFillColor(new Color(255, 114, 118));    //light red
                 }
                 else{
                     rect.setFillColor(new Color(118, 114, 255));
@@ -240,6 +306,28 @@ public class Game {
         text.setStrokeWidth(5);
         text.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
         canvas.add(text);
+
+        Button startButton = new Button("RETRY");
+        startButton.setCenter(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 50);
+        startButton.setScale(3, 3);
+        startButton.onClick( () -> gameStart());
+        
+        Rectangle startRect = new Rectangle(CANVAS_WIDTH/2 - 150, CANVAS_HEIGHT/2 + 30, 300, 40);
+        startRect.setFillColor(new Color(255, 114, 118));
+        canvas.add(startRect);
+        
+        //startGroup.add(startRect);
+        canvas.add(startButton);
+
+        Button quitButton = new Button("QUIT");
+        quitButton.setCenter(CANVAS_WIDTH/2 + 50, CANVAS_HEIGHT/2 + 50);
+        quitButton.onClick( () -> canvas.closeWindow());
+        
+        // Rectangle quitRect = new Rectangle(0,0, 40, 20);
+        // startRect.setFillColor(new Color(255, 114, 118));
+        
+        //startGroup.add(quitRect);
+        canvas.add(quitButton);
     }
 
     /**
@@ -312,6 +400,11 @@ public class Game {
         return col;
     }
 
+    /**
+     * used to get the letter score in accordance to the set values
+     * @param letter letter whose sccore is being sought
+     * @return the point value of the letter.
+     */
     public int getLetterScore(String letter){
         return queue.getLetterScore(letter);
     }

@@ -72,7 +72,11 @@ public class QGrid {
     }
     
     public boolean gameIsOver(){
-        return gameOver;
+        return gameOver == true;
+    }
+
+    public void setGameIsOver(boolean state){
+        gameOver = state;
     }
     public int redLine(){
         return redLine;
