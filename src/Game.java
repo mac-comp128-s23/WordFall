@@ -1,4 +1,6 @@
 import edu.macalester.graphics.*;
+import edu.macalester.graphics.ui.Button;
+
 import java.awt.Color;
 
 public class Game {
@@ -37,6 +39,25 @@ public class Game {
         currentTime = System.currentTimeMillis();
 
         canvas = new CanvasWindow("Word Capture", CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        
+        Image img;
+        // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
+        img = new Image(0, 0, "space.png");
+        img.rotateBy(90);
+        img.moveBy(-100, 0);
+        img.setScale(1.3);
+        canvas.add(img);
+
+        Button startButton = new Button("START");
+        startButton.moveBy(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+        startButton.onClick( () -> gameStart());
+        
+        canvas.add(startButton);
+        
+    }
+
+    private void gameStart(){
         drawGrid();
 
         // The lambda functions that run the game:
@@ -46,97 +67,6 @@ public class Game {
         });
 
         canvas.animate(() -> moveDown());
-    }
-
-    /**
-     * Moves the falling letter down every second (give or take). 
-     * It also detects when the falling letter has landed on another letter / the floor.
-     */
-    public void moveDown() {
-        currentTime = System.currentTimeMillis();
-
-        // Wait until the full interval between steps has passed and make sure the game is still running.
-        if(currentTime - lastStepTime < stepInterval || !gameIsRunning) {
-            return;
-        }
-
-        lastStepTime = currentTime;
-
-        if(grid.gameIsOver()){
-            
-            GameOverScreen();
-            gameIsRunning = false;
-        }
-        else{
-
-            // Checks if the letter has landed. If so, start a new letter falling from the top center space.
-            if(letterHasLanded) {
-                // Takes the next node from the queue as the one to place on the grid
-                QNode<String> next = queue.next();
-
-                String letter = next.getValue();
-                int letterPoints = next.getPoints();
-                grid.setNode(0, 2, letterPoints, letter);
-
-                fallingLetterRow = 0;
-                fallingLetterCol = 2;
-
-                letterHasLanded = false;
-            // If it hasn't landed, try to make it fall by one step. If this can't happen, update letterHasLanded.
-            } else {
-                QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
-                if(!fallingNode.setLower(fallingNode.getValue(), fallingNode.getPoints())) {
-                    letterHasLanded = true;
-
-                    grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol), letterHasLanded);
-                } else {
-                    fallingLetterRow++;
-                }
-            }
-
-            // Recalculate the step interval before continuing
-            recalculateStepInterval();
-
-            // Updates the grid to show the new letter positions
-            drawGrid();
-        }
-    }
-
-    /**
-     * Shows "GAME OVER" in big red letters when called
-     */
-    private void GameOverScreen(){
-        GraphicsText text = new GraphicsText("GAME OVER"); 
-        text.setFillColor(new Color(128,5,0));
-        text.setFontSize(60);
-        text.setStrokeWidth(5);
-        text.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-        canvas.add(text);
-    }
-
-    /**
-     * Moves the currently falling letter to the left or right depending on which arrow key is pressed.
-     * @param key The name of the key ("LEFT_ARROW" or "RIGHT_ARROW")
-     */
-    private void moveSideways(String key) {
-        // The letter can't be moved if it's already landed.
-        if(letterHasLanded) {
-            return;
-        }
-
-        QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
-
-        if(key.equals("DOWN_ARROW")) {
-            stepInterval = 10;
-        } else if(key.equals("LEFT_ARROW")) {
-            if(fallingNode.setLeft(fallingNode.getValue(), fallingNode.getPoints())) {
-                fallingLetterCol--;
-            }
-        } else if(key.equals("RIGHT_ARROW")) {
-            if(fallingNode.setRight(fallingNode.getValue(), fallingNode.getPoints())) {
-                fallingLetterCol++;
-            }
-        }
     }
 
     /**
@@ -244,6 +174,100 @@ public class Game {
         canvas.add(redLine);
     }
 
+
+
+    /**
+     * Moves the falling letter down every second (give or take). 
+     * It also detects when the falling letter has landed on another letter / the floor.
+     */
+    public void moveDown() {
+        currentTime = System.currentTimeMillis();
+
+        // Wait until the full interval between steps has passed and make sure the game is still running.
+        if(currentTime - lastStepTime < stepInterval || !gameIsRunning) {
+            return;
+        }
+
+        lastStepTime = currentTime;
+
+        if(grid.gameIsOver()){
+            
+            GameOverScreen();
+            gameIsRunning = false;
+        }
+        else{
+
+            // Checks if the letter has landed. If so, start a new letter falling from the top center space.
+            if(letterHasLanded) {
+                // Takes the next node from the queue as the one to place on the grid
+                QNode<String> next = queue.next();
+
+                String letter = next.getValue();
+                int letterPoints = next.getPoints();
+                grid.setNode(0, 2, letterPoints, letter);
+
+                fallingLetterRow = 0;
+                fallingLetterCol = 2;
+
+                letterHasLanded = false;
+            // If it hasn't landed, try to make it fall by one step. If this can't happen, update letterHasLanded.
+            } else {
+                QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
+                if(!fallingNode.setLower(fallingNode.getValue(), fallingNode.getPoints())) {
+                    letterHasLanded = true;
+
+                    grid.afterWordSettles(grid.getNode(fallingLetterRow, fallingLetterCol), letterHasLanded);
+                } else {
+                    fallingLetterRow++;
+                }
+            }
+
+            // Recalculate the step interval before continuing
+            recalculateStepInterval();
+
+            // Updates the grid to show the new letter positions
+            drawGrid();
+        }
+    }
+
+    /**
+     * Shows "GAME OVER" in big red letters when called
+     */
+    private void GameOverScreen(){
+        GraphicsText text = new GraphicsText("GAME OVER"); 
+        text.setFillColor(new Color(128,5,0));
+        text.setFontSize(60);
+        text.setStrokeWidth(5);
+        text.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+        canvas.add(text);
+    }
+
+    /**
+     * Moves the currently falling letter to the left or right depending on which arrow key is pressed.
+     * @param key The name of the key ("LEFT_ARROW" or "RIGHT_ARROW")
+     */
+    private void moveSideways(String key) {
+        // The letter can't be moved if it's already landed.
+        if(letterHasLanded) {
+            return;
+        }
+
+        QNode<String> fallingNode = grid.getNode(fallingLetterRow, fallingLetterCol);
+
+        if(key.equals("DOWN_ARROW")) {
+            stepInterval = 10;
+        } else if(key.equals("LEFT_ARROW")) {
+            if(fallingNode.setLeft(fallingNode.getValue(), fallingNode.getPoints())) {
+                fallingLetterCol--;
+            }
+        } else if(key.equals("RIGHT_ARROW")) {
+            if(fallingNode.setRight(fallingNode.getValue(), fallingNode.getPoints())) {
+                fallingLetterCol++;
+            }
+        }
+    }
+
+    
     /**
      * Returns the correct color for the point value of that letter.
      * @param letter
