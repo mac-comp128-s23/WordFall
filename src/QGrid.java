@@ -108,17 +108,16 @@ public class QGrid {
                 }
                 for(int step = 0; step < wordLength; step++) {
                     if(temp != null){
-                        word.append(temp.getValue());
+                        word.append(nullCheck(temp.getValue()));
                         wordNodes.add(temp);
                         temp = temp.getRight();
                     }
                 }
 
-                System.out.println(word);
-
                 if(word.length() < 8 && word.length() > 1 && dictionary.get(word.length()).contains(word.toString().toLowerCase())) {
                     for(int i = 0; i < wordNodes.size(); i++){
                         if(!wordsFound.contains(wordNodes.get(i))){
+                            System.out.println(word);
                             wordsFound.add(wordNodes.get(i));
                         }
                     }
@@ -139,7 +138,7 @@ public class QGrid {
 
                 for(int step = 0; step < wordLength; step++) {
                     if(temp != null) {
-                        word.append(temp.getValue());
+                        word.append(reverse(nullCheck(temp.getValue())));
                         wordNodes.add(temp);
                         temp = temp.getUpper();
                     }
@@ -149,6 +148,7 @@ public class QGrid {
                     for(int i = 0; i < wordNodes.size(); i ++){
                         if(!wordsFound.contains(wordNodes.get(i))){
                             wordsFound.add(wordNodes.get(i));
+                            System.out.println(reverse(word.toString()));
                         }
                     }
                     break;
@@ -157,6 +157,14 @@ public class QGrid {
         }
 
         return wordsFound;
+    }
+
+    private String nullCheck(String s) {
+        if(s == null) {
+            return "_";
+        } else {
+            return s;
+        }
     }
 
     /**

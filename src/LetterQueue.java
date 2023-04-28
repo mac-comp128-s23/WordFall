@@ -9,9 +9,9 @@ public class LetterQueue {
 
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static String doubleLetters = "AT,EN,ER,IN,LE,LY,NT,ON,QU,RA,RE,TE,TI,ST,TH,";
-    private final static String tripleLetters = "AND,ANT,ENT,EST,IVE,EEN,ING,";
+    private final static String tripleLetters = "AND,ANT,ENT,EST,IVE,ING,ERS,";
     
-    private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2};
+    private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 1, 9, 6, 9, 6, 3, 3, 2, 3, 2};
     private final static int[] points = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
 
     private Queue<QNode<String>> queue;
@@ -55,7 +55,7 @@ public class LetterQueue {
         String newLetter = getRandomLetter();
         newNode.setValue(newLetter, getLetterScore(newLetter));
         queue.add(newNode);
-    } 
+    }
 
     public GraphicsGroup getGraphics() {
         group = new GraphicsGroup(topLeft.getX(), 150);
@@ -104,13 +104,13 @@ public class LetterQueue {
             }
         }
         if(game.grid.getScore() >= 600) {
-            if((int)(Math.random() * 10) == 0) { // 1 in 10 chance
+            if((int)(Math.random() * 15) == 0) { // 1 in 15 chance
                 int random = (int) (Math.random() * (tripleLetters.length() / 4));
                 return tripleLetters.substring(random * 4, random * 4 + 3);
             }
         }
 
-        int random = (int) (Math.random() * 144); // Integer from 0 to 143
+        int random = (int) (Math.random() * 143); // Integer from 0 to 142, the total amount of tiles in the distribution array
         int total = 0;
 
         for(int outputIndex = 0; outputIndex < 26; outputIndex++) {

@@ -160,12 +160,12 @@ public class Game {
         Rectangle background = new Rectangle(topLeft.getX(), topLeft.getY()-60, GAME_WIDTH, GAME_HEIGHT+60);
         background.setStrokeWidth(strokeWidth);
 
-        GraphicsGroup titleGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY() - 120);
+        GraphicsGroup titleGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY() - 150);
         // Rectangle titleRect = new Rectangle(0, 0, GAME_WIDTH, 60);
         GraphicsText title = new GraphicsText("WORD CATCHER!!!");
-        title.setFontSize(30);
+        title.setFontSize(50);
         title.setStrokeWidth(2);
-        title.setCenter(GAME_WIDTH / 2, 30);
+        title.setCenter(GAME_WIDTH / 2, 50);
         // titleGroup.add(titleRect);
         titleGroup.add(title);
 
