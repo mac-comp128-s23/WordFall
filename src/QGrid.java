@@ -110,8 +110,8 @@ public class QGrid {
         }
 
         // Finding words horizontally
-        for(int wordLength = width; wordLength >= MIN_WORD_LENGTH; wordLength--) {
-            for(int startIndex = 0; startIndex + MIN_WORD_LENGTH <= width; startIndex++) {
+        for(int wordLength = width; wordLength >= MIN_WORD_LENGTH; wordLength--) { // word length *in tiles*
+            for(int startIndex = 0; startIndex + wordLength <= width; startIndex++) { // Left to right
                 QNode<String> temp = leftMostNode;
                 StringBuilder word = new StringBuilder("");
                 ArrayList<QNode<String>> wordNodes = new ArrayList<QNode<String>>();
@@ -127,21 +127,25 @@ public class QGrid {
                 }
 
                 if(word.length() < 8 && word.length() > 1 && dictionary.get(word.length()).contains(word.toString().toLowerCase())) {
+                    boolean isUnique = true;
                     for(int i = 0; i < wordNodes.size(); i++){
-                        if(!wordsFound.contains(wordNodes.get(i))){
-                            wordsFound.add(wordNodes.get(i));
-                        } else {
-                            wordLength = 0;
-                            startIndex = 10000000;
+                        // Check to make sure that the word is comprised of entirely unique nodes
+                        // So "BAND" won't also count "AND" for example
+                        if(wordsFound.contains(wordNodes.get(i))){
+                            isUnique = false;
                             break;
+                        } else {  
+                            wordsFound.add(wordNodes.get(i));
                         }
                     }
-                    System.out.println(word);
-                    if(lastWordsFound.size() > 3) {
-                        lastWordsFound.removeFirst();
+
+                    if(isUnique) {
+                        if(lastWordsFound.size() > 3) {
+                            lastWordsFound.removeFirst();
+                        }
+                        lastWordsFound.addLast(word.toString());
+                        break;
                     }
-                    lastWordsFound.addLast(word.toString());
-                    break;
                 }
             }
         }
@@ -165,17 +169,25 @@ public class QGrid {
                 }
 
                 if(word.length() < 8 && word.length() > 1 && dictionary.get(word.length()).contains(reverse(word.toString().toLowerCase()))) {
-                    for(int i = 0; i < wordNodes.size(); i ++){
-                        if(!wordsFound.contains(wordNodes.get(i))){
+                    boolean isUnique = true;
+                    for(int i = 0; i < wordNodes.size(); i++){
+                        // Check to make sure that the word is comprised of entirely unique nodes
+                        // So "BAND" won't also count "AND" for example
+                        if(wordsFound.contains(wordNodes.get(i))){
+                            isUnique = false;
+                            break;
+                        } else {
                             wordsFound.add(wordNodes.get(i));
                         }
                     }
-                    if(lastWordsFound.size() > 3) {
-                        lastWordsFound.removeFirst();
+
+                    if(isUnique) {
+                        if(lastWordsFound.size() > 3) {
+                            lastWordsFound.removeFirst();
+                        }
+                        lastWordsFound.addLast(reverse(word.toString()));
+                        break;
                     }
-                    lastWordsFound.addLast(reverse(word.toString()));
-                    System.out.println(reverse(word.toString()));
-                    break;
                 }
             }
         }
