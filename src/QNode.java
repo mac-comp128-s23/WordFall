@@ -46,11 +46,9 @@ public class QNode<E> {
         // The rectangle is the first object in the GraphicsGroup passed from Game.drawGrid().
         if(it.hasNext()) {
             rect = (Rectangle) it.next();
-            System.out.println("Rectangle has been changed");
         }
         if(it.hasNext()) {
             text = (GraphicsText) it.next();
-            System.out.println("GraphicsText has been changed.");
         }
         if(it.hasNext()) {
             if(it.next().toString().equals("0")){
@@ -58,7 +56,6 @@ public class QNode<E> {
             }else{
                 pointText = (GraphicsText) it.next();
             }
-            System.out.println("Points Graphics has been changed");
         }
     }
 

@@ -7,6 +7,9 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.ArrayDeque;
 
+/**
+ * The class that handles game mechanics and graphics.
+ */
 public class Game {
     public final static int CANVAS_WIDTH = 800;
     public final static int CANVAS_HEIGHT = 800;
@@ -33,9 +36,17 @@ public class Game {
      * Creating a new Game object causes the window to appear and the game to begin running.
      */
     public Game() {
-        canvas = new CanvasWindow("Word Capture", CANVAS_WIDTH, CANVAS_HEIGHT);
+        gameIsRunning = false;
+        canvas = new CanvasWindow("Word Catcher", CANVAS_WIDTH, CANVAS_HEIGHT);
                 
-        startScreen();        
+        startScreen();
+        
+        // The lambda functions that run the game:
+        canvas.animate(() -> moveDown());
+        
+        canvas.onKeyDown(e -> {
+            moveSideways(e.getKey().toString());
+        });
     }
 
     /**
@@ -45,30 +56,27 @@ public class Game {
     private void startScreen(){
         canvas.removeAll();
     
-        Image img;
-        // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
-        img = new Image(0, 0, "space.png");
-        img.rotateBy(90);
-        img.moveBy(-100, 0);
-        img.setScale(1.3);
-        canvas.add(img);
+        Image backgroundImage;
+        backgroundImage = new Image(0, 0, "space.png");
+        backgroundImage.rotateBy(90);
+        backgroundImage.moveBy(-100, 0);
+        backgroundImage.setScale(1.3);
+        canvas.add(backgroundImage);
 
         GraphicsText title = new GraphicsText("WORD CATCHER");
         title.setFontSize(50);
         title.setStrokeWidth(2);
         title.setCenter(CANVAS_WIDTH / 2, 300);
         canvas.add(title);
-
-        Button startButton = new Button("START");
-        startButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-        startButton.setScale(3, 3);
-        startButton.onClick( () -> gameStart());
         
         Rectangle startRect = new Rectangle(CANVAS_WIDTH/2 - 90,CANVAS_HEIGHT/2 - 50, 180, 160);
         startRect.setFillColor(new Color(255, 114, 118));
         canvas.add(startRect);
         
-        //startGroup.add(startRect);
+        Button startButton = new Button("START");
+        startButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+        startButton.setScale(3, 3);
+        startButton.onClick( () -> gameStart());
         canvas.add(startButton);
 
         Button quitButton = new Button("QUIT");
@@ -83,7 +91,7 @@ public class Game {
     }
 
     /**
-     * restarts the game everytime, whether it is the first game played or next one.
+     * Restarts the game upon being called, whether it is the first game played or next one.
      */
     private void gameStart(){
         if(!gameIsRunning){
@@ -92,21 +100,12 @@ public class Game {
             queue = new LetterQueue(this);
 
             letterHasLanded = true;
-            gameIsRunning = true;
             stepInterval = 1000;
             lastStepTime = System.currentTimeMillis();
             currentTime = System.currentTimeMillis();
         }
 
         drawGrid();
-
-        // The lambda functions that run the game:
-        canvas.onKeyDown(e -> {
-            moveSideways(e.getKey().toString());
-            drawGrid();
-        });
-
-        canvas.animate(() -> moveDown());
     }
 
     /**
@@ -147,13 +146,12 @@ public class Game {
     private void drawGrid() {
         canvas.removeAll();
 
-        Image img;
-        // img = new Image(0, 0, Game.class.getResource("/space.png").toURI().getPath());
-        img = new Image(0, 0, "space.png");
-        img.rotateBy(90);
-        img.moveBy(-100, 0);
-        img.setScale(1.3);
-        canvas.add(img);
+        Image backgroundImage;
+        backgroundImage = new Image(0, 0, "space.png");
+        backgroundImage.rotateBy(90);
+        backgroundImage.moveBy(-100, 0);
+        backgroundImage.setScale(1.3);
+        canvas.add(backgroundImage);
 
         Button pauseButton = new Button("PAUSE");
         pauseButton.setCenter(700,55);
@@ -167,12 +165,10 @@ public class Game {
         background.setStrokeWidth(strokeWidth);
 
         GraphicsGroup titleGroup = new GraphicsGroup(topLeft.getX(), topLeft.getY() - 150);
-        // Rectangle titleRect = new Rectangle(0, 0, GAME_WIDTH, 60);
         GraphicsText title = new GraphicsText("WORD CATCHER!!!");
         title.setFontSize(50);
         title.setStrokeWidth(2);
         title.setCenter(GAME_WIDTH / 2, 50);
-        // titleGroup.add(titleRect);
         titleGroup.add(title);
 
         canvas.add(titleGroup);
@@ -224,7 +220,7 @@ public class Game {
 
                 Rectangle rect = new Rectangle(0, 0, sideLength, sideLength);
                 rect.setStrokeWidth(5);
-                if(row<grid.redLine()+1){
+                if(row<grid.getRedLine()+1){
                     rect.setFillColor(new Color(255, 114, 118));    //light red
                 }
                 else{
@@ -260,7 +256,7 @@ public class Game {
         }
         canvas.add(background);
 
-        double lineNum = topLeft.getY() + sideLength*grid.redLine() + sideLength;
+        double lineNum = topLeft.getY() + sideLength*grid.getRedLine() + sideLength;
         Line redLine = new Line(topLeft.getX(), lineNum, topLeft.getX()+sideLength*5, lineNum);
         redLine.setStrokeColor(new Color(255, 0, 0));
         redLine.setStrokeWidth(5);
@@ -273,6 +269,10 @@ public class Game {
      * It also detects when the falling letter has landed on another letter / the floor.
      */
     public void moveDown() {
+        if(!gameIsRunning) {
+            return;
+        }
+
         currentTime = System.currentTimeMillis();
 
         // Wait until the full interval between steps has passed and make sure the game is still running.
@@ -362,7 +362,7 @@ public class Game {
      */
     private void moveSideways(String key) {
         // The letter can't be moved if it's already landed.
-        if(letterHasLanded) {
+        if(letterHasLanded || !gameIsRunning) {
             return;
         }
 
@@ -379,6 +379,8 @@ public class Game {
                 fallingLetterCol++;
             }
         }
+
+        drawGrid();
     }
 
     
@@ -410,19 +412,13 @@ public class Game {
         }
         else if(points == 80){
             col = new Color(0,78,255);      //bright blue
+        } 
+        else if(points == 90) {
+            col = new Color(33,46,82);
         }
         else{
             col = new Color(8,39,245);      //blue screen of death
         }
-        // else if(points == 15){
-        //     col = new Color(33,46,82);       //cetacean blue         changed to cloud burst blue
-        // }
-        // else if(points == 16){
-        //     col = new Color(75,54,95);      //advent purple
-        // }
-        // else{
-        //     col = new Color(128,49,167);    //grape purple
-        // }
         return col;
     }
 
@@ -436,8 +432,8 @@ public class Game {
     }
 
     /**
-     * Based on the total number of letters that have landed, recalculate the step interval, which speeds up over time.
-     * If x is the number of letters that have landed and i is the interval in milliseconds,
+     * Based on the player's score, recalculate the step interval, which speeds up over time.
+     * If x is the current score and i is the interval in milliseconds,
      *      i = 450cos(x/200)+550   {0 ≤ x ≤ 254}
      *      i = 1000(0.9985)^x      {255 ≤ x}
      * @return
@@ -449,8 +445,6 @@ public class Game {
         } else {
             this.stepInterval = (int) (1000 * Math.pow(0.9985, grid.getScore()));
         }
-
-        // this.stepInterval = Math.min((int) (450 * Math.cos(grid.getScore() / 200.0) + 550), (int) (1000 * Math.pow(0.9985, grid.getScore())));
     }
 
     public static void main(String[] args) {

@@ -2,6 +2,10 @@ import java.util.Queue;
 import java.util.ArrayDeque;
 import edu.macalester.graphics.*;
 
+/**
+ * This class controls the queue of the five next letters on the right side of the screen.
+ * Additionally, it deals with the semi-random generation of new letters, letter pairs, or triplets.
+ */
 public class LetterQueue {
     private static final int length = 5;
     private static final int sideLength = Game.GAME_WIDTH / 5;
@@ -9,7 +13,7 @@ public class LetterQueue {
 
     private final static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static String doubleLetters = "AT,EN,ER,IN,LE,LY,NT,ON,QU,RA,RE,TE,TI,ST,TH,";
-    private final static String tripleLetters = "AND,ANT,ENT,EST,IVE,ING,ERS,";
+    private final static String tripleLetters = "EST,IVE,ING,ERS,ICK,AST,";
     
     private final static int[] distribution = new int[]{13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 1, 9, 6, 9, 6, 3, 3, 2, 3, 2};
     private final static int[] points = new int[]{1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
@@ -57,6 +61,10 @@ public class LetterQueue {
         queue.add(newNode);
     }
 
+    /**
+     * Returns the graphical representation of the queue.
+     * @return
+     */
     public GraphicsGroup getGraphics() {
         group = new GraphicsGroup(topLeft.getX(), 150);
         GraphicsText label = new GraphicsText("Next up:");
@@ -91,20 +99,20 @@ public class LetterQueue {
     }
 
     /**
-     * Using the letter distribution in Banangrams as a reference, gives a random letter.
+     * Using the letter distribution in Banangrams as a reference for single letters, gives a random letter.
      * At later points in the game, chances for a double or triple letter are given.
      * @return
      */
     private String getRandomLetter() {
         //Checks for double/triple letters beforehand
         if(game.grid.getScore() >= 300) {
-            if((int)(Math.random() * 10) == 0) { // 1 in 10 chance
+            if((int)(Math.random() * 10) == 0) { // 1 in 10 chance for a double letter
                 int random = (int) (Math.random() * (doubleLetters.length() / 3));
                 return doubleLetters.substring(random * 3, random * 3 + 2);
             }
         }
         if(game.grid.getScore() >= 600) {
-            if((int)(Math.random() * 15) == 0) { // 1 in 15 chance
+            if((int)(Math.random() * 15) == 0) { // 1 in 15 chance for a triple letter
                 int random = (int) (Math.random() * (tripleLetters.length() / 4));
                 return tripleLetters.substring(random * 4, random * 4 + 3);
             }
@@ -122,6 +130,11 @@ public class LetterQueue {
         return "";
     }
 
+    /**
+     * Returns the score for a tile (which could have 1, 2, or 3 letters on it)
+     * @param letter the String value that the tile holds
+     * @return an integer score for the tile.
+     */
     public int getLetterScore(String letter){
         if(letter.length() == 1) {
             return points[alphabet.indexOf(letter)] * 10;

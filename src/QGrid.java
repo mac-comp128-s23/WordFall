@@ -1,12 +1,16 @@
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.io.File;
 import java.io.FileNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Map;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
+/**
+ * The QGrid class stores a 2-dimensional grid of QNodes. The visual representation of our game is derived from this grid.
+ */
 public class QGrid {
     private final int width = 5;
     private final int height = 8;
@@ -76,13 +80,14 @@ public class QGrid {
     }
     
     public boolean gameIsOver(){
-        return gameOver == true;
+        return gameOver;
     }
 
     public void setGameIsOver(boolean state){
         gameOver = state;
     }
-    public int redLine(){
+
+    public int getRedLine(){
         return redLine;
     }
 
@@ -247,12 +252,12 @@ public class QGrid {
     }
 
     /**
-     * Puts together all helper methods to do everything that happens once a words gets to the bottom of its column.
+     * Puts together all helper methods to do everything that happens once a word gets to the bottom of its column.
      * Then checks the entire grid for any new words that may have been 
      * @param current is the node that just landed
      */
     public void afterWordSettles(QNode<String> current, boolean letterHasLanded) {
-        ArrayList<QNode<String>> wordsFound = wordChecker(current);        
+        ArrayList<QNode<String>> wordsFound = wordChecker(current);
 
         boolean wordsLeft = true;
         
@@ -275,8 +280,7 @@ public class QGrid {
      * returns whether the game is over, determined by whether or not there is a block on the penultimate row.
      * @return
      */
-    public boolean gameOver(boolean letterHasLanded){
-
+    public boolean gameOver(boolean letterHasLanded) {
         for(int i = 0; i < width; i ++){
             if(getNode(redLine, i).getValue() != null && letterHasLanded){
                 return true;
@@ -289,8 +293,8 @@ public class QGrid {
     /**
      * Reads the wordlist file and returns an ArrayList of Strings representing the words.
      * In this case we will use "src/wordlist.txt" as the fileName argument
-     * @param fileName
-     * @return
+     * @param fileName the name of the file
+     * @return A Map of the words sorted by length. The key is the words' length and the value is an ArrayList of all such words.
      */
     private Map<Integer, ArrayList<String>> readFile(String fileName) {
         Map<Integer, ArrayList<String>> wordMap = new HashMap<Integer, ArrayList<String>>();
