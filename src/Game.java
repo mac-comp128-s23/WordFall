@@ -2,9 +2,12 @@ import edu.macalester.graphics.*;
 import edu.macalester.graphics.ui.Button;
 
 import java.awt.Color;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.util.ArrayDeque;
 
 /**
@@ -112,12 +115,40 @@ public class Game {
      * Shows the pause screen which allows the user to restart or continue playing where they left off
      */
     private void pauseScreen(){
+        // try {
+        //     File myFile = new File("points.txt");
+        //     FileWriter myWriter = new FileWriter("points.txt");
+        //     Scanner fileScanner = new Scanner("points.txt");
+        //     String previousScore = fileScanner.next().strip();
+        //     if(fileScanner.hasNext()){
+        //         myWriter.append("" + Integer.valueOf(previousScore) + grid.getScore());
+        //     }
+        //     else{
+        //         myWriter.write("" + grid.getScore());
+        //     }
+        //     myWriter.close();
+            
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+        
+
+        canvas.removeAll();
+        Image backgroundImage;
+        backgroundImage = new Image(0, 0, "space.png");
+        backgroundImage.rotateBy(90);
+        backgroundImage.moveBy(-100, 0);
+        backgroundImage.setScale(1.3);
+        canvas.add(backgroundImage);
+
         gameIsRunning = false;
-        Rectangle pauseRect = new Rectangle(CANVAS_WIDTH/2 - 60, CANVAS_HEIGHT/2 - 80, 120, 160);
+        Rectangle pauseRect = new Rectangle(CANVAS_WIDTH/2 - 100, CANVAS_HEIGHT/2 - 120, 200, 280);
         pauseRect.setFillColor(new Color(255, 114, 118));
 
         GraphicsText pauseText = new GraphicsText("PAUSE");
-        pauseText.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 50);
+        pauseText.setCenter(CANVAS_WIDTH/2 - 5, CANVAS_HEIGHT/2 - 40);
+        pauseText.setFontSize(18.0);
+        pauseText.setStrokeWidth(1);
         
         Button continueButton = new Button("CONTINUE");
         continueButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
@@ -126,14 +157,22 @@ public class Game {
             drawGrid();
         });
 
-        Button quitButton = new Button("RESTART");
-        quitButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 40);
-        quitButton.onClick( () -> {
+        Button restartButton = new Button("RESTART");
+        restartButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 40);
+        restartButton.onClick( () -> {
             gameStart();
         });
 
-        canvas.add(quitButton);
+        Button quitButton = new Button("QUIT");
+        quitButton.setCenter(CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 80);
+        quitButton.onClick( () -> {
+            canvas.closeWindow();
+            
+        });
+
+        canvas.add(restartButton);
         canvas.add(continueButton);
+        canvas.add(quitButton);
         canvas.add(pauseRect);
         canvas.add(pauseText);
 
