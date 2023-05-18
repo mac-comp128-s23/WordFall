@@ -473,17 +473,17 @@ public class Game {
     /**
      * Based on the player's score, recalculate the step interval, which speeds up over time.
      * If x is the current score and i is the interval in milliseconds,
-     *      i = { 450cos(x/250)+550  0 ≤ x 344,
-     *            900(0.9985)^x+100   x ≥ 344 }
+     *      i = { 450cos(x/500)+550  0 ≤ x 1083,
+     *            900(0.9986)^x+100   x ≥ 1083 }
      * @return
      */
     private void recalculateStepInterval() {
         int x = grid.getScore();
         // The two functions first intersect near x = 344, so after that point, switch to exp. decay.
-        if(x <= 344) {
-            this.stepInterval = (int) (450 * Math.cos(x / 250.0) + 550);
+        if(x <= 1083) {
+            this.stepInterval = (int) (450 * Math.cos(x / 500.0) + 550);
         } else {
-            this.stepInterval = (int) (900 * Math.pow(0.9985, x) + 100);
+            this.stepInterval = (int) (900 * Math.pow(0.9986, x) + 100);
         }
     }
 
